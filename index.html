@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SUMBER — Direct Wire</title>
+<meta name="description" content="Berita langsung dari newsroom resmi perusahaan — tanpa redaksi pihak ketiga.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0B1119; --surface:#111926; --surface-hi:#161F2E;
+    --line:#233044; --line-soft:#1A2332;
+    --text:#E8ECF1; --text-dim:#7C8AA0; --text-dimmer:#4E5C72;
+    --amber:#F2A93B; --amber-dim:#8A6222;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{ background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; min-height:100vh; }
+  ::selection{ background:var(--amber); color:#1a1200; }
+
+  .masthead{ border-bottom:1px solid var(--line); background:linear-gradient(180deg,#0D1420,var(--bg)); padding:22px 24px 16px; }
+  .masthead-row{ display:flex; align-items:baseline; justify-content:space-between; gap:16px; flex-wrap:wrap; max-width:1080px; margin:0 auto; }
+  .brand{ display:flex; align-items:baseline; gap:10px; }
+  .brand-mark{ font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600; letter-spacing:.14em; color:var(--amber); border:1px solid var(--amber-dim); padding:3px 6px; border-radius:3px; }
+  .brand h1{ font-family:'Space Grotesk',sans-serif; font-size:22px; font-weight:700; letter-spacing:-0.01em; margin:0; }
+  .brand h1 span{ color:var(--text-dim); font-weight:500; }
+  .tagline{ font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:var(--text-dim); letter-spacing:.02em; max-width:380px; text-align:right; line-height:1.5; }
+  .tagline b{ color:var(--text); font-weight:600; }
+
+  .ticker-wrap{ border-bottom:1px solid var(--line); background:var(--surface); overflow:hidden; position:relative; height:34px; display:flex; align-items:center; }
+  .ticker-label{ font-family:'IBM Plex Mono',monospace; font-size:10.5px; font-weight:600; letter-spacing:.12em; color:#0B1119; background:var(--amber); padding:0 12px; height:100%; display:flex; align-items:center; flex-shrink:0; z-index:2; position:relative; }
+  .ticker-track{ display:flex; white-space:nowrap; animation:scroll 60s linear infinite; font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--text-dim); }
+  .ticker-wrap:hover .ticker-track{ animation-play-state:paused; }
+  .ticker-track span{ padding:0 28px; }
+  .ticker-track b{ color:var(--text); font-weight:500; }
+  @keyframes scroll{ from{transform:translateX(0);} to{transform:translateX(-50%);} }
+
+  .wrap{ max-width:1080px; margin:0 auto; padding:20px 24px 60px; }
+
+  .controls{ display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:16px; }
+  .status{ font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--text-dimmer); }
+  .status .dot{ display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--amber); margin-right:6px; animation:pulse 1.6s ease-in-out infinite; }
+  @keyframes pulse{ 0%,100%{opacity:1;} 50%{opacity:.25;} }
+  .refresh-btn{ font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600; letter-spacing:.06em; color:var(--text); background:var(--surface-hi); border:1px solid var(--line); padding:8px 14px; border-radius:4px; cursor:pointer; transition:border-color .15s; }
+  .refresh-btn:hover{ border-color:var(--amber); color:var(--amber); }
+  .refresh-btn:disabled{ opacity:.5; cursor:default; }
+
+  .chips{ display:flex; flex-wrap:wrap; gap:7px; margin-bottom:22px; }
+  .chip{ font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:500; padding:6px 10px 6px 8px; border-radius:20px; cursor:pointer; user-select:none; border:1px solid var(--line); background:var(--surface); color:var(--text-dim); display:flex; align-items:center; gap:6px; transition:all .12s; }
+  .chip .sw{ width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+  .chip.active{ color:var(--text); border-color:var(--chip-color,var(--amber)); background:var(--surface-hi); }
+  .chip.dim{ opacity:.4; }
+  .chip .cnt{ color:var(--text-dimmer); }
+  .chip.active .cnt{ color:inherit; opacity:.6; }
+
+  .feed{ display:flex; flex-direction:column; }
+  .item{ display:grid; grid-template-columns:118px 1fr; gap:18px; padding:16px 0; border-bottom:1px solid var(--line-soft); text-decoration:none; color:inherit; }
+  .item:hover .item-title{ color:var(--amber); }
+  .item-meta{ font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--text-dimmer); padding-top:2px; }
+  .item-meta .src{ display:inline-flex; align-items:center; gap:5px; font-weight:600; letter-spacing:.03em; margin-bottom:5px; }
+  .item-meta .src .sw{ width:6px; height:6px; border-radius:50%; }
+  .item-body{ min-width:0; }
+  .item-title{ font-family:'Space Grotesk',sans-serif; font-size:16px; font-weight:600; line-height:1.35; margin:0 0 5px; color:var(--text); transition:color .12s; }
+  .item-desc{ font-size:13px; color:var(--text-dim); line-height:1.55; margin:0; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+
+  .empty, .loading-row{ font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--text-dimmer); padding:40px 0; text-align:center; border-bottom:1px solid var(--line-soft); }
+  .err-row{ font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--text-dimmer); padding:8px 0; border-bottom:1px solid var(--line-soft); }
+  .err-row a{ color:var(--text-dim); }
+
+  footer{ max-width:1080px; margin:24px auto 0; padding:16px 24px 0; border-top:1px solid var(--line); font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--text-dimmer); line-height:1.7; }
+
+  @media (max-width:600px){ .item{ grid-template-columns:1fr; gap:6px; } .tagline{ display:none; } }
+</style>
+</head>
+<body>
+
+<div class="masthead">
+  <div class="masthead-row">
+    <div class="brand">
+      <span class="brand-mark">WIRE</span>
+      <h1>SUMBER <span>/ direct-source</span></h1>
+    </div>
+    <div class="tagline"><b>Tanpa redaksi.</b> Setiap berita di sini diambil langsung dari newsroom &amp; RSS resmi perusahaan — bukan dari Bloomberg, Reuters, atau media lain.</div>
+  </div>
+</div>
+
+<div class="ticker-wrap">
+  <div class="ticker-label">LIVE</div>
+  <div class="ticker-track" id="tickerTrack"><span>Memuat transmisi dari sumber resmi…</span></div>
+</div>
+
+<div class="wrap">
+  <div class="controls">
+    <div class="status" id="statusLine"><span class="dot"></span>menghubungkan ke newsroom resmi…</div>
+    <button class="refresh-btn" id="refreshBtn">↻ REFRESH ALL</button>
+  </div>
+
+  <div class="chips" id="chips"></div>
+
+  <div class="feed" id="feed">
+    <div class="loading-row">MENARIK RILIS RESMI DARI SETIAP SUMBER…</div>
+  </div>
+</div>
+
+<footer>
+  SUMBER menarik data langsung dari feed RSS/press-release resmi milik masing-masing perusahaan. Tidak ada redaksi, editor, atau media pihak ketiga di antaranya — klik judul untuk membaca rilis asli di domain resmi perusahaan. Fetch dilakukan di browser kamu lewat proxy CORS publik (karena sebagian besar newsroom belum mengizinkan fetch langsung dari browser); jika satu proxy gagal, situs otomatis mencoba proxy cadangan. Sumber daftar bisa diedit di berkas <code>index.html</code>, variabel <code>SOURCES</code>.
+</footer>
+
+<script>
+const SOURCES = [
+  { id:'amd',       name:'AMD',                 color:'#ED1C24', feed:'https://ir.amd.com/news-events/press-releases/rss',        home:'https://ir.amd.com/news-events/press-releases' },
+  { id:'intel',     name:'Intel',               color:'#0071C5', feed:'https://newsroom.intel.com/feed',                           home:'https://newsroom.intel.com/news' },
+  { id:'samsung',   name:'Samsung',             color:'#4C7EF0', feed:'https://news.samsung.com/global/feed',                      home:'https://news.samsung.com/global' },
+  { id:'nvidia',    name:'NVIDIA',              color:'#76B900', feed:'https://nvidianews.nvidia.com/rss.xml',                     home:'https://nvidianews.nvidia.com' },
+  { id:'ethereum',  name:'Ethereum Foundation', color:'#8C9EFF', feed:'https://blog.ethereum.org/en/feed.xml',                     home:'https://blog.ethereum.org' },
+  { id:'apple',     name:'Apple',               color:'#D4D8DC', feed:'https://www.apple.com/newsroom/rss-feed.rss',               home:'https://www.apple.com/newsroom' },
+  { id:'google',    name:'Google',              color:'#4285F4', feed:'https://blog.google/rss/',                                  home:'https://blog.google' },
+  { id:'microsoft', name:'Microsoft',           color:'#4CC2FF', feed:'https://news.microsoft.com/feed/',                          home:'https://news.microsoft.com' },
+  { id:'meta',      name:'Meta',                color:'#5B8DEF', feed:'https://about.fb.com/news/feed/',                           home:'https://about.fb.com/news' },
+  { id:'amazon',    name:'Amazon',              color:'#FF9900', feed:'https://www.aboutamazon.com/rss/feed.rss',                  home:'https://www.aboutamazon.com/news' },
+
+  // — Crypto & stablecoin projects —
+  { id:'tether',      name:'Tether',            color:'#26A17B', feed:'https://tether.io/news/feed/',                              home:'https://tether.io/news/' },
+  { id:'bnbchain',    name:'BNB Chain',         color:'#F0B90B', feed:'https://www.bnbchain.org/en/blog/rss.xml',                  home:'https://www.bnbchain.org/en/blog' },
+  { id:'circle',      name:'Circle (USDC)',     color:'#2775CA', feed:'https://www.circle.com/blog-all/rss.xml',                   home:'https://www.circle.com/blog' },
+  { id:'ripple',      name:'Ripple (XRP)',      color:'#23292F', feed:'https://ripple.com/insights/feed/',                         home:'https://ripple.com/insights/' },
+  { id:'solana',      name:'Solana',            color:'#14F195', feed:'https://solana.com/news/rss.xml',                          home:'https://solana.com/news' },
+  { id:'tron',        name:'TRON DAO',          color:'#EF0027', feed:'https://trondao.org/blog/feed/',                           home:'https://trondao.org/blog/' },
+  { id:'hyperliquid', name:'Hyperliquid',       color:'#00D2B3', feed:'https://app.hyperliquid.xyz/announcements',                home:'https://app.hyperliquid.xyz/announcements' },
+  { id:'dogecoin',    name:'Dogecoin Fdn',      color:'#C2A633', feed:'https://foundation.dogecoin.com/index.xml',                home:'https://foundation.dogecoin.com/blog/' },
+  { id:'leo',         name:'UNUS SED LEO',      color:'#08C58E', feed:'https://blog.bitfinex.com/tag/unus-sed-leo/feed/',         home:'https://blog.bitfinex.com/tag/unus-sed-leo/' },
+  { id:'cardano',     name:'Cardano',           color:'#0033AD', feed:'https://cardanofoundation.org/blog/rss.xml',               home:'https://cardanofoundation.org/blog' },
+  { id:'monero',      name:'Monero',            color:'#FF6600', feed:'https://www.getmonero.org/feed.xml',                       home:'https://www.getmonero.org/blog/' },
+  { id:'chainlink',   name:'Chainlink',         color:'#375BD2', feed:'https://blog.chain.link/feed/',                            home:'https://blog.chain.link/' },
+  { id:'stellar',     name:'Stellar',           color:'#08B5E5', feed:'https://stellar.org/blog/feed',                            home:'https://stellar.org/blog' },
+  { id:'dai',         name:'Sky (DAI/MakerDAO)',color:'#F4B731', feed:'https://forum.makerdao.com/latest.rss',                    home:'https://forum.makerdao.com/' },
+  { id:'ethena',      name:'Ethena (USDe)',     color:'#7C3AED', feed:'https://ethena.fi/blog/rss.xml',                           home:'https://ethena.fi/blog' },
+  { id:'canton',      name:'Canton Network',    color:'#6E56CF', feed:'https://canton.network/media-resources',                   home:'https://canton.network/media-resources' },
+  { id:'litecoin',    name:'Litecoin',          color:'#345D9D', feed:'https://blog.litecoin.org/feed/',                          home:'https://blog.litecoin.org/' },
+  { id:'hedera',      name:'Hedera (HBAR)',     color:'#3F00FF', feed:'https://hedera.com/blog/feed',                             home:'https://hedera.com/blog/' },
+  { id:'avalanche',   name:'Avalanche',         color:'#E84142', feed:'https://www.avax.network/about/blog/rss.xml',              home:'https://www.avax.network/about/blog' },
+  { id:'pyusd',       name:'PayPal (PYUSD)',    color:'#003087', feed:'https://newsroom.paypal-corp.com/rss/news-cryptocurrency.xml', home:'https://newsroom.paypal-corp.com/news-cryptocurrency' },
+];
+
+// Coba beberapa proxy CORS berurutan — kalau satu gagal/limit, lanjut ke berikutnya.
+const PROXIES = [
+  url => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url),
+  url => 'https://corsproxy.io/?url=' + encodeURIComponent(url),
+  url => 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(url),
+];
+
+const activeFilters = new Set(SOURCES.map(s=>s.id));
+let allItems = [];
+let failedSources = [];
+
+function stripHtml(str){
+  if(!str) return '';
+  const div = document.createElement('div');
+  div.innerHTML = str;
+  return (div.textContent || div.innerText || '').replace(/\s+/g,' ').trim();
+}
+
+function timeAgo(date){
+  const s = Math.floor((Date.now() - date.getTime())/1000);
+  if(s < 0) return 'baru saja';
+  const units = [['tahun',31536000],['bulan',2592000],['minggu',604800],['hari',86400],['jam',3600],['menit',60]];
+  for(const [label,secs] of units){ const v = Math.floor(s/secs); if(v >= 1) return v + ' ' + label + ' lalu'; }
+  return 'baru saja';
+}
+
+async function tryFetch(url, ms){
+  return Promise.race([
+    fetch(url),
+    new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')), ms))
+  ]);
+}
+
+async function fetchSource(src){
+  let lastErr = null;
+  for(const buildProxyUrl of PROXIES){
+    try{
+      const res = await tryFetch(buildProxyUrl(src.feed), 12000);
+      if(!res.ok) throw new Error('http ' + res.status);
+      const text = await res.text();
+      const xml = new DOMParser().parseFromString(text, 'text/xml');
+      if(xml.querySelector('parsererror')) throw new Error('parse error');
+      let nodes = Array.from(xml.querySelectorAll('item'));
+      if(nodes.length === 0) nodes = Array.from(xml.querySelectorAll('entry'));
+      if(nodes.length === 0) throw new Error('no items');
+      const items = nodes.slice(0, 8).map(node => {
+        const title = node.querySelector('title')?.textContent?.trim() || '(tanpa judul)';
+        let link = node.querySelector('link')?.textContent?.trim();
+        if(!link){ link = node.querySelector('link')?.getAttribute('href') || src.home; }
+        const pubRaw = node.querySelector('pubDate')?.textContent
+                    || node.querySelector('updated')?.textContent
+                    || node.querySelector('published')?.textContent;
+        const date = pubRaw ? new Date(pubRaw) : new Date(0);
+        const descRaw = node.querySelector('description')?.textContent
+                     || node.querySelector('summary')?.textContent
+                     || node.querySelector('content')?.textContent || '';
+        const desc = stripHtml(descRaw).slice(0, 220);
+        return { title, link, date, desc, source: src };
+      });
+      return { ok:true, items };
+    }catch(e){ lastErr = e; }
+  }
+  return { ok:false, error: lastErr?.message || 'unknown' };
+}
+
+function renderChips(){
+  const chips = document.getElementById('chips');
+  chips.innerHTML = '';
+  SOURCES.forEach(src => {
+    const count = allItems.filter(i => i.source.id === src.id).length;
+    const el = document.createElement('div');
+    el.className = 'chip' + (activeFilters.has(src.id) ? ' active' : ' dim');
+    el.style.setProperty('--chip-color', src.color);
+    el.innerHTML = `<span class="sw" style="background:${src.color}"></span>${src.name} <span class="cnt">${count}</span>`;
+    el.onclick = () => { activeFilters.has(src.id) ? activeFilters.delete(src.id) : activeFilters.add(src.id); renderChips(); renderFeed(); };
+    chips.appendChild(el);
+  });
+}
+
+function renderFeed(){
+  const feed = document.getElementById('feed');
+  const visible = allItems.filter(i => activeFilters.has(i.source.id)).sort((a,b) => b.date - a.date);
+  feed.innerHTML = '';
+
+  if(visible.length === 0 && failedSources.length === SOURCES.length){
+    feed.innerHTML = '<div class="empty">Semua sumber gagal dimuat. Coba REFRESH ALL, atau proxy CORS publik sedang dibatasi.</div>';
+    return;
+  }
+  if(visible.length === 0){
+    feed.innerHTML = '<div class="empty">Tidak ada rilis untuk filter yang dipilih.</div>';
+  }
+
+  visible.forEach(item => {
+    const a = document.createElement('a');
+    a.className = 'item'; a.href = item.link; a.target = '_blank'; a.rel = 'noopener noreferrer';
+    a.innerHTML = `
+      <div class="item-meta">
+        <div class="src"><span class="sw" style="background:${item.source.color}"></span>${item.source.name}</div>
+        ${item.date.getTime() ? timeAgo(item.date) : ''}
+      </div>
+      <div class="item-body">
+        <p class="item-title">${item.title}</p>
+        ${item.desc ? `<p class="item-desc">${item.desc}</p>` : ''}
+      </div>`;
+    feed.appendChild(a);
+  });
+
+  failedSources.forEach(f => {
+    const row = document.createElement('div');
+    row.className = 'err-row';
+    row.innerHTML = `⚠ ${f.name} gagal dimuat otomatis — <a href="${f.home}" target="_blank" rel="noopener">buka newsroom resmi ${f.name} langsung →</a>`;
+    feed.appendChild(row);
+  });
+}
+
+function renderTicker(){
+  const track = document.getElementById('tickerTrack');
+  const top = [...allItems].sort((a,b)=>b.date-a.date).slice(0, 14);
+  if(top.length === 0) return;
+  track.innerHTML = [...top, ...top].map(i => `<span><b>${i.source.name}</b> — ${i.title}</span>`).join('');
+}
+
+async function loadAll(){
+  const btn = document.getElementById('refreshBtn');
+  btn.disabled = true;
+  document.getElementById('statusLine').innerHTML = '<span class="dot"></span>menghubungkan ke ' + SOURCES.length + ' newsroom resmi…';
+  allItems = []; failedSources = [];
+  renderChips();
+  document.getElementById('feed').innerHTML = '<div class="loading-row">MENARIK RILIS RESMI DARI SETIAP SUMBER…</div>';
+
+  const results = await Promise.all(SOURCES.map(src => fetchSource(src)));
+  results.forEach((res, idx) => {
+    const src = SOURCES[idx];
+    if(res.ok) res.items.forEach(it => allItems.push(it));
+    else failedSources.push(src);
+  });
+
+  const okCount = SOURCES.length - failedSources.length;
+  document.getElementById('statusLine').innerHTML =
+    `<span class="dot"></span>${okCount}/${SOURCES.length} sumber tersambung · ${allItems.length} rilis · diperbarui ${new Date().toLocaleTimeString('id-ID')}`;
+
+  renderChips(); renderFeed(); renderTicker();
+  btn.disabled = false;
+}
+
+document.getElementById('refreshBtn').onclick = loadAll;
+loadAll();
+</script>
+
+</body>
+</html>
