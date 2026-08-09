@@ -160,7 +160,7 @@
       <span class="brand-mark pulse">WIRE</span>
       <h1>SUMBER <span>/ direct-source</span></h1>
     </div>
-    <div class="tagline"><b>Tanpa redaksi.</b> Setiap berita di sini diambil langsung dari newsroom &amp; RSS resmi perusahaan — bukan dari Bloomberg, Reuters, atau media lain.</div>
+    <div class="tagline"><b>Tanpa redaksi.</b> Setiap berita di sini diambil langsung dari newsroom &amp; RSS resmi perusahaan — khusus rilis terbaru hari ini.</div>
   </div>
   <div class="stat-strip" id="statStrip"></div>
 </div>
@@ -398,7 +398,7 @@ const SOURCES = [
   { id:'dydx',        cat:'crypto', name:'dYdX (DYDX)',           color:'#6966FF', feed:'https://dydx.exchange/blog/rss.xml',                       home:'https://dydx.exchange/blog' },
   { id:'1inch',       cat:'crypto', name:'1inch Network (1INCH)', color:'#1B314F', feed:'https://blog.1inch.io/rss/',                              home:'https://blog.1inch.io/' },
   { id:'chiliz',      cat:'crypto', name:'Chiliz (CHZ)',          color:'#CD0128', feed:'https://www.chiliz.com/en/blog/feed/',                    home:'https://www.chiliz.com/en/blog/' },
-  { id:'sandbox',     cat:'crypto', name:'The Sandbox (SAND)',    color:'#0084FF', feed:'https://medium.com/feed/sandbox-game',                     home:'https://medium.com/sandbox-game' },
+  { id:'sandbox',     cat:'crypto', name:'The Sandbox (SAND)',    color:'#00843D', feed:'https://medium.com/feed/sandbox-game',                     home:'https://medium.com/sandbox-game' },
   { id:'decentraland',cat:'crypto', name:'Decentraland (MANA)',   color:'#FF2D55', feed:'https://decentraland.org/blog/rss.xml',                    home:'https://decentraland.org/blog' },
   { id:'axie',        cat:'crypto', name:'Axie Infinity (AXS)',   color:'#0055D4', feed:'https://blog.axieinfinity.com/rss/',                       home:'https://blog.axieinfinity.com/' },
   { id:'beam',        cat:'crypto', name:'Beam (BEAM)',           color:'#000000', feed:'https://onbeam.com/blog/rss.xml',                          home:'https://onbeam.com/blog' },
@@ -439,9 +439,6 @@ let allItems = [];
 let failedSources = [];       
 let directAccessSources = []; 
 
-// Batas Usia Berita Maksimal (7 Hari) untuk Menjaga Keterbaruan Realtime
-const MAX_AGE_DAYS = 7;
-
 function stripHtml(str){
   if(!str) return '';
   const div = document.createElement('div');
@@ -450,12 +447,18 @@ function stripHtml(str){
 }
 
 function timeAgo(date){
-  if(!date || isNaN(date.getTime()) || date.getTime() === 0) return 'terbaru';
+  if(!date || isNaN(date.getTime()) || date.getTime() === 0) return 'terbaru hari ini';
   const s = Math.floor((Date.now() - date.getTime())/1000);
   if(s < 0) return 'baru saja';
-  const units = [['tahun',31536000],['bulan',2592000],['minggu',604800],['hari',86400],['jam',3600],['menit',60]];
+  const units = [['jam',3600],['menit',60]];
   for(const [label,secs] of units){ const v = Math.floor(s/secs); if(v >= 1) return v + ' ' + label + ' lalu'; }
   return 'baru saja';
+}
+
+function isSameCalendarDay(d1, d2) {
+  return d1.getFullYear() === d2.getFullYear() &&
+         d1.getMonth() === d2.getMonth() &&
+         d1.getDate() === d2.getDate();
 }
 
 async function tryFetch(url, ms){
@@ -471,30 +474,46 @@ async function tryFetch(url, ms){
   }
 }
 
-// Fallback HTML Scraper untuk Newsroom tanpa RSS XML
+// Scraper HTML Khusus Artikel Spesifik (Hanya jika terbit hari ini)
 function parseHtmlNewsroom(htmlText, src) {
   const doc = new DOMParser().parseFromString(htmlText, 'text/html');
   const links = Array.from(doc.querySelectorAll('a'));
   const items = [];
+  const seenLinks = new Set();
+  const now = new Date();
   
+  const articlePatterns = /\/(news|press|release|article|blog|story|post|detail|statement|2026)\//i;
+  const ignorePatterns = /\/(category|tag|about|contact|privacy|terms|login|register|search|faq|help|cookie|investor-relation|#)/i;
+
   for(const link of links) {
     const text = link.innerText ? link.innerText.trim() : '';
     let href = link.getAttribute('href');
-    if(text.length > 25 && href && !href.startsWith('javascript') && !href.startsWith('#')) {
+    
+    if(text.length >= 18 && href && !href.startsWith('javascript') && !href.startsWith('#')) {
       if(!href.startsWith('http')) {
         try {
           const origin = new URL(src.home).origin;
           href = origin + (href.startsWith('/') ? href : '/' + href);
-        } catch(e) { href = src.home; }
+        } catch(e) { continue; }
       }
-      items.push({
-        title: text.slice(0, 150),
-        link: href,
-        date: new Date(),
-        desc: 'Diakses langsung dari newsroom resmi ' + src.name,
-        source: src
-      });
-      if(items.length >= 5) break;
+
+      const isHome = href.replace(/\/$/, '') === src.home.replace(/\/$/, '') || href.replace(/\/$/, '') === new URL(src.home).origin;
+      const isArticleMatch = articlePatterns.test(href);
+      const isIgnored = ignorePatterns.test(href);
+
+      if(!isHome && !isIgnored && (isArticleMatch || href.length > src.home.length + 8)) {
+        if(!seenLinks.has(href)) {
+          seenLinks.add(href);
+          items.push({
+            title: text.slice(0, 150),
+            link: href,
+            date: now,
+            desc: 'Rilis langsung dari newsroom ' + src.name,
+            source: src
+          });
+          if(items.length >= 5) break;
+        }
+      }
     }
   }
   return items;
@@ -527,12 +546,15 @@ async function fetchSource(src){
                         || node.querySelector('updated')?.textContent
                         || node.querySelector('published')?.textContent;
             
-            // Jika tidak ada pubDate asli, beri timestamp 0 agar tidak dianggap realtime
-            const date = pubRaw ? new Date(pubRaw) : new Date(0);
+            if(!pubRaw) continue; // Abaikan entri yang tidak memiliki tanggal publikasi asli
+            const date = new Date(pubRaw);
+            if(isNaN(date.getTime())) continue;
+
+            // Filter KETAT: Hanya berita di hari yang sama (Maksimal 24 Jam terakhir / Kalender Hari Ini)
+            const diffHours = (now - date) / (1000 * 60 * 60);
+            const isToday = isSameCalendarDay(now, date) || (diffHours >= 0 && diffHours <= 24);
             
-            // Filter: Abaikan jika berita lebih tua dari MAX_AGE_DAYS
-            const diffDays = (now - date) / (1000 * 60 * 60 * 24);
-            if(pubRaw && diffDays > MAX_AGE_DAYS) continue;
+            if(!isToday) continue; // Skip total jika berita terbit sebelum hari ini
 
             const descRaw = node.querySelector('description')?.textContent
                          || node.querySelector('summary')?.textContent
@@ -545,13 +567,13 @@ async function fetchSource(src){
         }
       }
 
-      // 2. Fallback Scraper HTML
+      // 2. Fallback Scraper HTML Khusus Artikel
       const htmlItems = parseHtmlNewsroom(text, src);
       if(htmlItems.length > 0) {
         return { ok: true, items: htmlItems };
       }
 
-      throw new Error('parsing failed');
+      throw new Error('no same-day news found');
     } catch(e) { 
       lastErr = e; 
     }
@@ -631,16 +653,21 @@ sourcesToggleBtn.onclick = () => {
 
 function renderFeed(){
   const feed = document.getElementById('feed');
+  const now = new Date();
   
-  // Hanya tampilkan berita valid dan urutkan dari timestamp paling baru
+  // Saring ketat HANYA rilis yang terbit dalam 24 jam terakhir / hari yang sama
   const visible = allItems
-    .filter(i => activeFilters.has(i.source.id) && i.date.getTime() > 0)
+    .filter(i => {
+      if(!activeFilters.has(i.source.id)) return false;
+      const diffHours = (now - i.date) / (1000 * 60 * 60);
+      return isSameCalendarDay(now, i.date) || (diffHours >= 0 && diffHours <= 24);
+    })
     .sort((a,b) => b.date.getTime() - a.date.getTime());
 
   feed.innerHTML = '';
 
   if(visible.length === 0){
-    feed.innerHTML = `<div class="empty">Tidak ada rilis baru dalam ${MAX_AGE_DAYS} hari terakhir untuk filter yang dipilih.</div>`;
+    feed.innerHTML = `<div class="empty">Belum ada press release baru yang terbit di hari yang sama (24 jam terakhir) untuk kategori ini.</div>`;
     return;
   }
 
@@ -710,7 +737,7 @@ async function loadAll(){
   
   allItems = []; failedSources = []; directAccessSources = [];
   renderStatStrip(); renderTabs(); renderChips(); renderDirectAccess();
-  document.getElementById('feed').innerHTML = '<div class="loading-row">MENARIK RILIS RESMI DARI SETIAP SUMBER…<div class="bar"></div></div>';
+  document.getElementById('feed').innerHTML = '<div class="loading-row">MENARIK RILIS HARI INI DARI SETIAP SUMBER…<div class="bar"></div></div>';
 
   let done = 0;
   await fetchAllBatched(FETCHABLE_SOURCES, 6, (idx, res) => {
@@ -723,13 +750,13 @@ async function loadAll(){
     }
     done++;
     document.getElementById('statusLine').innerHTML =
-      `<span class="dot"></span>memuat… ${done}/${FETCHABLE_SOURCES.length} sumber diproses · ${allItems.length} rilis terkumpul`;
+      `<span class="dot"></span>memuat… ${done}/${FETCHABLE_SOURCES.length} sumber diproses · ${allItems.length} rilis hari ini terkumpul`;
     if(done % 4 === 0 || done === FETCHABLE_SOURCES.length){ renderChips(); renderFeed(); renderTicker(); renderDirectAccess(); }
   });
 
   const okCount = FETCHABLE_SOURCES.length - failedSources.length;
   document.getElementById('statusLine').innerHTML =
-    `<span class="dot"></span>${okCount}/${FETCHABLE_SOURCES.length} sumber tersambung · ${allItems.length} rilis terambil · ` +
+    `<span class="dot"></span>${okCount}/${FETCHABLE_SOURCES.length} tersambung · ${allItems.length} rilis terbit hari ini · ` +
     `${directAccessSources.length} alternatif akses-langsung`;
 
   renderChips(); renderFeed(); renderTicker(); renderDirectAccess();
