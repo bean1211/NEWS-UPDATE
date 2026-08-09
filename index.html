@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SUMBER — Direct Wire</title>
-<meta name="description" content="Berita langsung dari newsroom resmi perusahaan dan pers release resmi negara — tanpa redaksi pihak ketiga.">
+<meta name="description" content="Berita langsung dari newsroom resmi perusahaan, pers release negara, dan pengumuman transfer klub sepak bola resmi — tanpa redaksi swasta.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -14,7 +14,7 @@
     --line:#212C3E; --line-soft:#171F2C;
     --text:#ECF0F4; --text-dim:#8592A6; --text-dimmer:#4C5870;
     --amber:#F2A93B; --amber-dim:#8A6222; --amber-ink:#1A1200;
-    --c-tech:#F2A93B; --c-crypto:#9B87F5; --c-us:#4C9AFF; --c-id:#EF5D5D; --c-gov:#00B894;
+    --c-tech:#F2A93B; --c-crypto:#9B87F5; --c-us:#4C9AFF; --c-id:#EF5D5D; --c-gov:#00B894; --c-football:#2ECC71;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
@@ -52,6 +52,7 @@
   .stat[data-cat="stock-us"] .stat-n{ color:var(--c-us); }
   .stat[data-cat="stock-id"] .stat-n{ color:var(--c-id); }
   .stat[data-cat="gov-wire"] .stat-n{ color:var(--c-gov); }
+  .stat[data-cat="transfers"] .stat-n{ color:var(--c-football); }
 
   /* ---------- ticker ---------- */
   .ticker-wrap{ border-bottom:1px solid var(--line); background:var(--surface); overflow:hidden; position:relative; height:36px; display:flex; align-items:center; }
@@ -161,7 +162,7 @@
       <span class="brand-mark pulse">WIRE</span>
       <h1>SUMBER <span>/ direct-source</span></h1>
     </div>
-    <div class="tagline"><b>Tanpa redaksi swasta.</b> Setiap berita diambil langsung dari newsroom/pers release resmi perusahaan, badan resmi negara, dan jaringan kawat pers publik global.</div>
+    <div class="tagline"><b>Tanpa redaksi swasta.</b> Setiap berita diambil langsung dari newsroom/pers release resmi perusahaan, badan resmi negara, portal transfer liga/klub, dan kawat pers publik global.</div>
   </div>
   <div class="stat-strip" id="statStrip"></div>
 </div>
@@ -173,7 +174,7 @@
 
 <div class="wrap">
   <div class="controls">
-    <div class="status" id="statusLine"><span class="dot"></span>menghubungkan ke newsroom & pers release resmi…</div>
+    <div class="status" id="statusLine"><span class="dot"></span>menghubungkan ke newsroom, pers release & portal klub resmi…</div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;">
       <button class="refresh-btn" id="sourcesToggleBtn">☰ KELOLA SUMBER</button>
       <button class="refresh-btn" id="directAccessToggleBtn">🔗 AKSES LANGSUNG <span class="cnt">0</span></button>
@@ -417,8 +418,7 @@ const SOURCES = [
   { id:'metamask',    cat:'crypto', name:'MetaMask',          color:'#F6851B', feed:'https://medium.com/feed/metamask',                         home:'https://metamask.io/news/' },
   { id:'ledger',      cat:'crypto', name:'Ledger',            color:'#000000', feed:'https://www.ledger.com/category/blog-posts/feed/',         home:'https://www.ledger.com/blog' },
 
-  // --- PERS RELEASE NEGARA & LAYANAN KAWAT RESMI (TAB TERPISAH) ---
-  // ASIA & PASIFIK
+  // --- PERS RELEASE NEGARA & LAYANAN KAWAT RESMI ---
   { id:'gov-id-setkab', cat:'gov-wire', name:'Sekretariat Kabinet RI (Setkab)', color:'#00B894', feed:'https://setkab.go.id/feed/', home:'https://setkab.go.id' },
   { id:'gov-id-kemlu', cat:'gov-wire', name:'Kementerian Luar Negeri RI (Kemlu)', color:'#00B894', feed:'https://kemlu.go.id/portal/en/news_rss', home:'https://kemlu.go.id' },
   { id:'gov-id-antara', cat:'gov-wire', name:'LKBN ANTARA (Kantor Berita Negara)', color:'#00B894', feed:'https://www.antaranews.com/rss/terkini.xml', home:'https://www.antaranews.com' },
@@ -431,14 +431,10 @@ const SOURCES = [
   { id:'gov-au-pm', cat:'gov-wire', name:'Prime Minister of Australia', color:'#00B894', feed:'https://www.pm.gov.au/media/rss.xml', home:'https://www.pm.gov.au' },
   { id:'gov-au-dfat', cat:'gov-wire', name:'Australia Dept Foreign Affairs (DFAT)', color:'#00B894', feed:'https://www.dfat.gov.au/rss.xml', home:'https://www.dfat.gov.au' },
   { id:'gov-nz-beehive', cat:'gov-wire', name:'NZ Government (Beehive.govt.nz)', color:'#00B894', feed:'https://www.beehive.govt.nz/rss.xml', home:'https://www.beehive.govt.nz' },
-
-  // AMERIKA
   { id:'gov-us-whitehouse', cat:'gov-wire', name:'The White House Briefing Room', color:'#00B894', feed:'https://www.whitehouse.gov/briefing-room/feed/', home:'https://www.whitehouse.gov/briefing-room/' },
   { id:'gov-us-state', cat:'gov-wire', name:'U.S. Department of State', color:'#00B894', feed:'https://www.state.gov/rss-feed/press-releases/feed/', home:'https://www.state.gov/press-releases/' },
   { id:'gov-ca-news', cat:'gov-wire', name:'Government of Canada News', color:'#00B894', feed:'https://www.canada.ca/en/news/web-feeds.html', home:'https://www.canada.ca/en/news.html' },
   { id:'gov-br-planalto', cat:'gov-wire', name:'Governo do Brasil (Planalto)', color:'#00B894', feed:'https://www.gov.br/planalto/pt-br/rss.xml', home:'https://www.gov.br/planalto' },
-
-  // EROPA & TIMUR TENGAH & AFRIKA
   { id:'gov-uk-news', cat:'gov-wire', name:'GOV.UK Press Releases', color:'#00B894', feed:'https://www.gov.uk/government/news.atom', home:'https://www.gov.uk/government/news' },
   { id:'gov-eu-corner', cat:'gov-wire', name:'European Commission Press Corner', color:'#00B894', feed:'https://ec.europa.eu/commission/presscorner/api/rss', home:'https://ec.europa.eu/commission/presscorner' },
   { id:'gov-de-bundes', cat:'gov-wire', name:'Bundesregierung Deutschland', color:'#00B894', feed:'https://www.bundesregierung.de/service/rss/presse-rss.xml', home:'https://www.bundesregierung.de' },
@@ -447,12 +443,39 @@ const SOURCES = [
   { id:'gov-ae-wam', cat:'gov-wire', name:'Emirates News Agency (WAM)', color:'#00B894', feed:'https://wam.ae/en/rss', home:'https://wam.ae/en' },
   { id:'gov-sa-spa', cat:'gov-wire', name:'Saudi Press Agency (SPA)', color:'#00B894', feed:'https://www.spa.gov.sa/rss.xml', home:'https://www.spa.gov.sa' },
   { id:'gov-za-news', cat:'gov-wire', name:'South African Government News (SAnews)', color:'#00B894', feed:'https://www.sanews.gov.za/rss.xml', home:'https://www.sanews.gov.za' },
-
-  // JARINGAN DISTRIBUSI PERS RELEASE RESMI (PR WIRES GLOBAL)
   { id:'wire-prnewswire', cat:'gov-wire', name:'PR Newswire (Global Releases)', color:'#00B894', feed:'https://www.prnewswire.com/rss/news-releases-list.rss', home:'https://www.prnewswire.com' },
   { id:'wire-businesswire', cat:'gov-wire', name:'Business Wire (Official Releases)', color:'#00B894', feed:'https://feed.businesswire.com/rss/home/?rss=G1QFDF48XlhWIldYWA==', home:'https://www.businesswire.com' },
   { id:'wire-globenewswire', cat:'gov-wire', name:'GlobeNewswire Feed', color:'#00B894', feed:'https://www.globenewswire.com/rss/feed/all', home:'https://www.globenewswire.com' },
-  { id:'wire-eqs', cat:'gov-wire', name:'EQS Corporate News Wire', color:'#00B894', feed:'https://www.eqs-news.com/rss/', home:'https://www.eqs-news.com' }
+  { id:'wire-eqs', cat:'gov-wire', name:'EQS Corporate News Wire', color:'#00B894', feed:'https://www.eqs-news.com/rss/', home:'https://www.eqs-news.com' },
+
+  // --- TRANSFER BOLA & PENGUMUMAN RESMI KLUB/LIGA (TAB TERPISAH) ---
+  // LIGA & ORGANISASI SEPAK BOLA RESMI DUNIAS
+  { id:'fb-fifa', cat:'transfers', name:'FIFA Inside (Official News)', color:'#2ECC71', feed:'https://www.fifa.com/rss/news.xml', home:'https://www.fifa.com' },
+  { id:'fb-uefa', cat:'transfers', name:'UEFA Official News', color:'#2ECC71', feed:'https://www.uefa.com/rssfeed/news/rss.xml', home:'https://www.uefa.com' },
+  { id:'fb-epl', cat:'transfers', name:'Premier League Official Transits', color:'#2ECC71', feed:'https://www.premierleague.com/news/transfers', home:'https://www.premierleague.com/transfers' },
+  { id:'fb-laliga', cat:'transfers', name:'LaLiga Official News', color:'#2ECC71', feed:'https://www.laliga.com/en-GB/news', home:'https://www.laliga.com' },
+  { id:'fb-bundesliga', cat:'transfers', name:'Bundesliga Official Transfers', color:'#2ECC71', feed:'https://www.bundesliga.com/en/bundesliga/transfers', home:'https://www.bundesliga.com/en/bundesliga/transfers' },
+  { id:'fb-seriea', cat:'transfers', name:'Lega Serie A Official News', color:'#2ECC71', feed:'https://www.legaseriea.it/en/news', home:'https://www.legaseriea.it/en' },
+  { id:'fb-ligue1', cat:'transfers', name:'Ligue 1 McDonald's Official', color:'#2ECC71', feed:'https://www.ligue1.com/news', home:'https://www.ligue1.com' },
+  { id:'fb-liga1-id', cat:'transfers', name:'PT LIB / BRI Liga 1 Indonesia', color:'#2ECC71', feed:'https://ligaindonesiabaru.com/news', home:'https://ligaindonesiabaru.com' },
+  { id:'fb-mls', cat:'transfers', name:'Major League Soccer (MLS)', color:'#2ECC71', feed:'https://www.mlssoccer.com/news/transfers', home:'https://www.mlssoccer.com/news/transfers' },
+  { id:'fb-saudi-pro', cat:'transfers', name:'Saudi Pro League Official', color:'#2ECC71', feed:'https://spl.com.sa/en/news', home:'https://spl.com.sa/en' },
+
+  // NEWSROOM & PORTAL KLUB RESMI (PREMIER LEAGUE, LALIGA, SERIE A, BUNDESLIGA, DLL)
+  { id:'fb-realmadrid', cat:'transfers', name:'Real Madrid C.F. Official', color:'#2ECC71', feed:'https://www.realmadrid.com/en-US/news', home:'https://www.realmadrid.com' },
+  { id:'fb-fcbarcelona', cat:'transfers', name:'FC Barcelona Official', color:'#2ECC71', feed:'https://www.fcbarcelona.com/en/news', home:'https://www.fcbarcelona.com' },
+  { id:'fb-manutd', cat:'transfers', name:'Manchester United Official', color:'#2ECC71', feed:'https://www.manutd.com/en/news/transfers', home:'https://www.manutd.com/en/news/transfers' },
+  { id:'fb-mancity', cat:'transfers', name:'Manchester City Official', color:'#2ECC71', feed:'https://www.mancity.com/news/transfers', home:'https://www.mancity.com/news/transfers' },
+  { id:'fb-liverpool', cat:'transfers', name:'Liverpool F.C. Official', color:'#2ECC71', feed:'https://www.liverpoolfc.com/news/media-watch', home:'https://www.liverpoolfc.com/news' },
+  { id:'fb-arsenal', cat:'transfers', name:'Arsenal F.C. Official', color:'#2ECC71', feed:'https://www.arsenal.com/news', home:'https://www.arsenal.com/news' },
+  { id:'fb-chelsea', cat:'transfers', name:'Chelsea F.C. Official', color:'#2ECC71', feed:'https://www.chelseafc.com/en/news', home:'https://www.chelseafc.com/en/news' },
+  { id:'fb-bayern', cat:'transfers', name:'FC Bayern München Official', color:'#2ECC71', feed:'https://fcbayern.com/en/news', home:'https://fcbayern.com/en/news' },
+  { id:'fb-psg', cat:'transfers', name:'Paris Saint-Germain Official', color:'#2ECC71', feed:'https://en.psg.fr/teams/first-team/content', home:'https://en.psg.fr' },
+  { id:'fb-juventus', cat:'transfers', name:'Juventus F.C. Official', color:'#2ECC71', feed:'https://www.juventus.com/en/news/', home:'https://www.juventus.com/en' },
+  { id:'fb-inter', cat:'transfers', name:'Inter Milan Official', color:'#2ECC71', feed:'https://www.inter.it/en/news', home:'https://www.inter.it/en' },
+  { id:'fb-acmilan', cat:'transfers', name:'AC Milan Official', color:'#2ECC71', feed:'https://www.acmilan.com/en/news', home:'https://www.acmilan.com/en' },
+  { id:'fb-persib', cat:'transfers', name:'Persib Bandung Official', color:'#2ECC71', feed:'https://persib.co.id/news', home:'https://persib.co.id' },
+  { id:'fb-persija', cat:'transfers', name:'Persija Jakarta Official', color:'#2ECC71', feed:'https://persija.id/news', home:'https://persija.id' }
 ];
 
 // Coba beberapa proxy CORS berurutan
@@ -463,12 +486,13 @@ const PROXIES = [
 ];
 
 const CATEGORIES = [
-  { id:'all',      label:'Semua',                 color:null },
-  { id:'tech',     label:'Teknologi',             color:'var(--c-tech)' },
-  { id:'crypto',   label:'Crypto',                color:'var(--c-crypto)' },
-  { id:'stock-us', label:'Saham AS',              color:'var(--c-us)' },
-  { id:'stock-id', label:'Saham Indonesia',       color:'var(--c-id)' },
-  { id:'gov-wire', label:'Pers Release Negara',   color:'var(--c-gov)' },
+  { id:'all',       label:'Semua',                 color:null },
+  { id:'tech',      label:'Teknologi',             color:'var(--c-tech)' },
+  { id:'crypto',    label:'Crypto',                color:'var(--c-crypto)' },
+  { id:'stock-us',  label:'Saham AS',              color:'var(--c-us)' },
+  { id:'stock-id',  label:'Saham Indonesia',       color:'var(--c-id)' },
+  { id:'gov-wire',  label:'Pers Release Negara',   color:'var(--c-gov)' },
+  { id:'transfers', label:'Transfer Bola',         color:'var(--c-football)' },
 ];
 const CAT_LABEL = Object.fromEntries(CATEGORIES.map(c=>[c.id,c.label]));
 
