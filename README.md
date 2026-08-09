@@ -36,32 +36,39 @@ Sebagai gantinya, daftar `SOURCES` diperluas ke ~55 proyek crypto tambahan yang 
 top ~100 market cap dan punya blog/RSS resmi yang terverifikasi (L1/L2 besar, protokol DeFi utama,
 exchange, dan wallet/infra papan atas).
 
-## Saham Nasdaq-100 & S&P 100
+## Saham blue-chip AS (S&P 100 / Nasdaq-100)
 
-Daftar juga sekarang mencakup ~17 saham blue-chip AS dari indeks Nasdaq-100 dan S&P 100 (di luar yang
-sudah ada sejak awal: AMD, Intel, NVIDIA, Apple, Google, Microsoft, Meta, Amazon, PayPal). Sama seperti
-crypto, prinsipnya tetap: **hanya tautan resmi milik perusahaan itu sendiri**, bukan agregator berita
-seperti Yahoo Finance atau Reuters.
+Daftar sekarang mencakup ~98 saham blue-chip AS: 8 yang sudah ada sejak awal (AMD, Intel, NVIDIA, Apple,
+Google, Microsoft, Meta, Amazon) ditambah ~90 anggota S&P 100 lain — mencakup mayoritas konstituen indeks
+ini (Berkshire Hathaway, JPMorgan Chase, ExxonMobil, Johnson & Johnson, Walmart, Visa, UnitedHealth,
+Procter & Gamble, dan seterusnya). Sama seperti crypto, prinsipnya tetap: **hanya tautan resmi milik
+perusahaan itu sendiri**, bukan agregator berita seperti Yahoo Finance, Reuters, atau Bloomberg.
 
-Untuk saham, sebagian besar newsroom perusahaan besar memang ada, tapi **tidak semua punya feed RSS/XML
-asli yang bisa diverifikasi** — beberapa newsroom modern hanya me-render halaman lewat JavaScript tanpa
-endpoint RSS publik (misalnya Visa, Mastercard, Walmart, JPMorgan Chase, Adobe, Broadcom, Disney, Costco,
-AbbVie, Home Depot, Cisco pada penulisan ini). Untuk itu, entri-entri ini memakai pola yang sama dengan
-Hyperliquid/Canton Network: `feed` dan `home` mengarah ke halaman newsroom yang sama, sehingga situs
-langsung menampilkan tombol link daripada mencoba parse RSS yang tidak ada.
+Untuk ~90 entri baru ini, `feed` sengaja **disamakan dengan `home`** (halaman newsroom resmi) untuk semua
+nama — bukan karena RSS pasti tidak ada, tapi karena situs ini punya prinsip dasar untuk tidak pernah
+menebak URL RSS/XML tanpa verifikasi langsung. Banyak newsroom perusahaan besar AS memang punya RSS, tapi
+URL persisnya (`/rss/PressRelease.aspx`, `/feed.xml`, dsb.) bervariasi per perusahaan dan sering tidak
+terlihat di halaman itu sendiri — hanya lewat tombol "RSS" yang di-generate JavaScript. Menebak pola ini
+untuk 90 nama sekaligus berisiko menghasilkan link yang 404 diam-diam, yang justru bertentangan dengan
+tujuan situs. Karena itu semua entri baru pakai pola aman Hyperliquid/Canton Network: `feed` = `home`,
+situs langsung menampilkan tombol link ke newsroom asli.
 
-Feed RSS yang **sudah terverifikasi asli** (XML valid, dites langsung): Tesla, Netflix, Qualcomm,
-Starbucks, Johnson & Johnson, IBM. Kebanyakan situs IR (`investor.*` atau `ir.*`) perusahaan publik AS
-memakai platform "Q4 Inc" dengan pola `[domain-ir]/rss/PressRelease.aspx` — pola ini terbukti valid untuk
-beberapa nama di atas, tapi tidak digeneralisasi ke semua nama lain tanpa verifikasi eksplisit, supaya
-tidak ada tautan RSS yang menebak dan berisiko 404 diam-diam.
+Feed RSS untuk 6 nama berikut **coba diverifikasi tapi belum ketemu URL XML persis yang stabil** saat
+penulisan ini (Tesla, Netflix, Qualcomm, Starbucks, Johnson & Johnson, IBM) — jadi untuk sementara mereka
+juga memakai pola `feed` = `home`, sama seperti entri lainnya, sampai ada yang memverifikasi URL RSS
+aslinya secara eksplisit.
 
-**Kalau kamu mau memperkuat cakupan saham ini** (menambah verifikasi RSS untuk nama yang masih pakai
-newsroom-only, atau menambah nama baru dari Nasdaq-100/S&P 100 yang belum ada), coba pola
-`[domain-ir-perusahaan]/rss/PressRelease.aspx` atau `/rss-feeds` dulu — kalau valid, ganti `feed` entri
-itu ke URL RSS asli; kalau tidak ada, biarkan `feed` sama dengan `home`.
+**Kalau kamu mau memperkuat cakupan saham ini** (mengganti `feed` dengan URL RSS asli untuk nama yang
+masih newsroom-only, atau menambah nama baru dari Nasdaq-100/S&P 100 yang belum ada — misalnya sisa
+~10 anggota S&P 100 yang belum masuk daftar), cara paling aman:
+1. Buka halaman newsroom/press-release resminya, cari tombol "RSS" atau "Subscribe" dan lihat URL
+   tujuannya lewat inspect element (karena sering di-generate JS, bukan link `<a href>` biasa).
+2. Coba juga pola umum platform "Q4 Inc" yang dipakai banyak situs IR AS: `[domain-ir]/rss/PressRelease.aspx`.
+3. Kalau URL RSS-nya valid (dites langsung, bukan tebakan), ganti `feed` entri itu ke URL tersebut;
+   kalau tidak ada atau tidak yakin, biarkan `feed` sama dengan `home`.
 
-Total sekarang 86 sumber (10 teknologi + ~59 crypto + ~17 saham).
+Total sekarang 159 sumber (10 teknologi + ~59 crypto + ~98 saham blue-chip AS termasuk 8 dari kategori
+teknologi di atas).
 
 **Kalau kamu mau menambah proyek spesifik di luar daftar ini** (rank 100–500), cara paling aman:
 1. Cari apakah proyek itu punya blog resmi di domain sendiri (bukan Medium/Twitter saja) — cek halaman
