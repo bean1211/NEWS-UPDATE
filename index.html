@@ -104,7 +104,7 @@
 </div>
 
 <footer>
-  SUMBER menarik data langsung dari feed RSS/press-release resmi milik masing-masing perusahaan. Tidak ada redaksi, editor, atau media pihak ketiga di antaranya — klik judul untuk membaca rilis asli di domain resmi perusahaan. Fetch dilakukan di browser kamu lewat proxy CORS publik (karena sebagian besar newsroom belum mengizinkan fetch langsung dari browser); jika satu proxy gagal, situs otomatis mencoba proxy cadangan. Sumber daftar bisa diedit di berkas <code>index.html</code>, variabel <code>SOURCES</code>.
+  SUMBER menarik data langsung dari feed RSS/press-release resmi milik masing-masing perusahaan. Tidak ada redaksi, editor, atau media pihak ketiga di antaranya — klik judul untuk membaca rilis asli di domain resmi perusahaan. Fetch dilakukan di browser kamu lewat proxy CORS publik (karena sebagian besar newsroom belum mengizinkan fetch langsung dari browser); jika satu proxy gagal, situs otomatis mencoba proxy cadangan. Sumber daftar bisa diedit di berkas <code>index.html</code>, variabel <code>SOURCES</code>. Daftar proyek crypto mencakup mayoritas top ~100 by market cap yang punya blog/newsroom resmi terverifikasi — lihat README untuk catatan soal proyek di luar itu.
 </footer>
 
 <script>
@@ -141,6 +141,51 @@ const SOURCES = [
   { id:'hedera',      name:'Hedera (HBAR)',     color:'#3F00FF', feed:'https://hedera.com/blog/feed',                             home:'https://hedera.com/blog/' },
   { id:'avalanche',   name:'Avalanche',         color:'#E84142', feed:'https://www.avax.network/about/blog/rss.xml',              home:'https://www.avax.network/about/blog' },
   { id:'pyusd',       name:'PayPal (PYUSD)',    color:'#003087', feed:'https://newsroom.paypal-corp.com/rss/news-cryptocurrency.xml', home:'https://newsroom.paypal-corp.com/news-cryptocurrency' },
+
+  // — Layer 1 / Layer 2 blockchains (perluasan top ~11–100) —
+  { id:'polkadot',    name:'Polkadot',          color:'#E6007A', feed:'https://polkadot.network/blog/feed',                       home:'https://polkadot.network/blog/' },
+  { id:'cosmos',      name:'Cosmos',            color:'#2E3148', feed:'https://blog.cosmos.network/feed',                         home:'https://blog.cosmos.network/' },
+  { id:'sui',         name:'Sui',               color:'#4DA2FF', feed:'https://blog.sui.io/rss/',                                 home:'https://blog.sui.io/' },
+  { id:'aptos',       name:'Aptos',             color:'#00D0B0', feed:'https://aptosnetwork.com/currents/rss.xml',                home:'https://aptosnetwork.com/currents' },
+  { id:'ton',         name:'Toncoin (TON)',     color:'#0098EA', feed:'https://blog.ton.org/rss.xml',                             home:'https://blog.ton.org/' },
+  { id:'nearprotocol',name:'NEAR Protocol',     color:'#00EC97', feed:'https://nearprotocol.com/feed/',                           home:'https://www.near.org/blog' },
+  { id:'algorand',    name:'Algorand',          color:'#000000', feed:'https://medium.com/feed/algorand',                        home:'https://algorand.co/' },
+  { id:'filecoin',    name:'Filecoin',          color:'#0090FF', feed:'https://filecoin.io/blog/feed/index.xml',                 home:'https://www.filecoin.io/blog' },
+  { id:'celestia',    name:'Celestia',          color:'#7B2BF9', feed:'https://blog.celestia.org/rss/',                          home:'https://blog.celestia.org/' },
+  { id:'injective',   name:'Injective',         color:'#00F2FE', feed:'https://injective.com/blog/feed',                          home:'https://injective.com/blog' },
+  { id:'polygon',     name:'Polygon',           color:'#8247E5', feed:'https://polygon.technology/blog/feed',                     home:'https://polygon.technology/blog' },
+  { id:'arbitrum',    name:'Arbitrum',          color:'#12AAFF', feed:'https://arbitrumfoundation.medium.com/feed',               home:'https://arbitrumfoundation.medium.com/' },
+  { id:'optimism',    name:'Optimism',          color:'#FF0420', feed:'https://api.paragraph.com/blogs/rss/@the-optimism-collective', home:'https://paragraph.com/@the-optimism-collective' },
+  { id:'starknet',    name:'Starknet',          color:'#EC796B', feed:'https://medium.com/feed/@StarkWare',                       home:'https://www.starknet.io/blog/' },
+  { id:'zksync',      name:'ZKsync',            color:'#4E529A', feed:'https://api.paragraph.com/blogs/rss/@zksync',              home:'https://paragraph.com/@zksync' },
+  { id:'zilliqa',     name:'Zilliqa',           color:'#49C1BF', feed:'https://blog.zilliqa.com/feed',                            home:'https://blog.zilliqa.com/' },
+  { id:'thegraph',    name:'The Graph',         color:'#6747ED', feed:'https://thegraph.com/blog/rss.xml',                        home:'https://thegraph.com/blog/' },
+  { id:'kava',        name:'Kava',              color:'#FF564F', feed:'https://medium.com/feed/kava-labs',                        home:'https://www.kava.io/news' },
+  { id:'celo',        name:'Celo',              color:'#FCFF52', feed:'https://medium.com/feed/celoorg',                          home:'https://celo.org/blog' },
+  { id:'arweave',     name:'Arweave',           color:'#222326', feed:'https://medium.com/feed/@arweave',                         home:'https://arweave.medium.com/' },
+
+  // — DeFi & DEX protocols —
+  { id:'uniswap',     name:'Uniswap',           color:'#FF007A', feed:'https://blog.uniswap.org/rss.xml',                        home:'https://blog.uniswap.org/' },
+  { id:'aave',        name:'Aave',              color:'#B6509E', feed:'https://governance.aave.com/posts.rss',                    home:'https://governance.aave.com/' },
+  { id:'lido',        name:'Lido',              color:'#00A3FF', feed:'https://blog.lido.fi/rss/',                                home:'https://blog.lido.fi/' },
+  { id:'curve',       name:'Curve Finance',     color:'#3465A4', feed:'https://blog.curve.fi/feed',                               home:'https://news.curve.finance/' },
+  { id:'compound',    name:'Compound',          color:'#00D395', feed:'https://medium.com/feed/compound-finance',                 home:'https://medium.com/compound-finance' },
+  { id:'synthetix',   name:'Synthetix',         color:'#00D1FF', feed:'https://blog.synthetix.io/rss/',                           home:'https://blog.synthetix.io/' },
+  { id:'sushiswap',   name:'Sushi',             color:'#FA52A0', feed:'https://medium.com/feed/sushiswap-org',                    home:'https://www.sushi.com/blog' },
+  { id:'pendle',      name:'Pendle',            color:'#3CACF3', feed:'https://medium.com/feed/pendle',                           home:'https://medium.com/pendle' },
+  { id:'thorchain',   name:'THORChain',         color:'#00D4AA', feed:'https://medium.com/feed/thorchain',                        home:'https://medium.com/thorchain' },
+  { id:'balancer',    name:'Balancer',          color:'#1E1E1E', feed:'https://medium.com/feed/balancer-protocol',                home:'https://medium.com/balancer-protocol' },
+  { id:'rocketpool',  name:'Rocket Pool',       color:'#FF8558', feed:'https://medium.com/feed/rocket-pool',                      home:'https://medium.com/rocket-pool' },
+  { id:'gmx',         name:'GMX',               color:'#2D42FC', feed:'https://medium.com/feed/@gmx.io',                          home:'https://gmxio.medium.com/' },
+
+  // — Exchanges, wallets & infrastruktur —
+  { id:'okx',         name:'OKX',               color:'#000000', feed:'https://www.okx.com/help/rss/announcements-latest-announcements', home:'https://www.okx.com/help/section/announcements' },
+  { id:'bitgetblog',  name:'Bitget',            color:'#00F0FF', feed:'https://www.bitget.com/rss/support/announcement',          home:'https://www.bitget.com/support/articles' },
+  { id:'cryptocom',   name:'Crypto.com',        color:'#002D74', feed:'https://blog.crypto.com/rss/',                             home:'https://crypto.com/company-updates' },
+  { id:'kraken',      name:'Kraken',            color:'#5741D9', feed:'https://blog.kraken.com/feed/',                            home:'https://blog.kraken.com/' },
+  { id:'coinbase',    name:'Coinbase',          color:'#0052FF', feed:'https://blog.coinbase.com/feed',                           home:'https://www.coinbase.com/blog' },
+  { id:'metamask',    name:'MetaMask',          color:'#F6851B', feed:'https://medium.com/feed/metamask',                         home:'https://metamask.io/news/' },
+  { id:'ledger',      name:'Ledger',            color:'#000000', feed:'https://www.ledger.com/category/blog-posts/feed/',         home:'https://www.ledger.com/blog' },
 ];
 
 // Coba beberapa proxy CORS berurutan — kalau satu gagal/limit, lanjut ke berikutnya.
