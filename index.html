@@ -9,68 +9,147 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#0B1119; --surface:#111926; --surface-hi:#161F2E;
-    --line:#233044; --line-soft:#1A2332;
-    --text:#E8ECF1; --text-dim:#7C8AA0; --text-dimmer:#4E5C72;
-    --amber:#F2A93B; --amber-dim:#8A6222;
+    --bg:#080B11; --bg-hi:#0D1219;
+    --surface:#10161F; --surface-hi:#161F2C;
+    --line:#212C3E; --line-soft:#171F2C;
+    --text:#ECF0F4; --text-dim:#8592A6; --text-dimmer:#4C5870;
+    --amber:#F2A93B; --amber-dim:#8A6222; --amber-ink:#1A1200;
+    --c-tech:#F2A93B; --c-crypto:#9B87F5; --c-us:#4C9AFF; --c-id:#EF5D5D;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
-  body{ background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; min-height:100vh; }
-  ::selection{ background:var(--amber); color:#1a1200; }
+  body{
+    background:
+      radial-gradient(ellipse 900px 500px at 15% -10%, rgba(242,169,59,.05), transparent 60%),
+      radial-gradient(ellipse 700px 500px at 100% 0%, rgba(155,135,245,.05), transparent 55%),
+      var(--bg);
+    color:var(--text); font-family:'Inter',sans-serif; min-height:100vh;
+  }
+  ::selection{ background:var(--amber); color:var(--amber-ink); }
+  a{ -webkit-tap-highlight-color:transparent; }
+  :focus-visible{ outline:2px solid var(--amber); outline-offset:2px; border-radius:2px; }
 
-  .masthead{ border-bottom:1px solid var(--line); background:linear-gradient(180deg,#0D1420,var(--bg)); padding:22px 24px 16px; }
-  .masthead-row{ display:flex; align-items:baseline; justify-content:space-between; gap:16px; flex-wrap:wrap; max-width:1080px; margin:0 auto; }
-  .brand{ display:flex; align-items:baseline; gap:10px; }
-  .brand-mark{ font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600; letter-spacing:.14em; color:var(--amber); border:1px solid var(--amber-dim); padding:3px 6px; border-radius:3px; }
-  .brand h1{ font-family:'Space Grotesk',sans-serif; font-size:22px; font-weight:700; letter-spacing:-0.01em; margin:0; }
+  /* ---------- masthead ---------- */
+  .masthead{ border-bottom:1px solid var(--line); background:linear-gradient(180deg,var(--bg-hi),var(--bg)); padding:26px 24px 18px; }
+  .masthead-row{ display:flex; align-items:flex-start; justify-content:space-between; gap:20px; flex-wrap:wrap; max-width:1100px; margin:0 auto; }
+  .brand{ display:flex; align-items:center; gap:11px; }
+  .brand-mark{ font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600; letter-spacing:.14em; color:var(--amber-ink); background:var(--amber); padding:4px 7px; border-radius:3px; line-height:1; }
+  .brand-mark.pulse{ position:relative; }
+  .brand-mark.pulse::before{ content:''; position:absolute; inset:0; border-radius:3px; border:1px solid var(--amber); animation:ringpulse 2.2s ease-out infinite; }
+  @keyframes ringpulse{ 0%{ opacity:.7; transform:scale(1);} 100%{ opacity:0; transform:scale(1.5);} }
+  .brand h1{ font-family:'Space Grotesk',sans-serif; font-size:23px; font-weight:700; letter-spacing:-0.01em; margin:0; }
   .brand h1 span{ color:var(--text-dim); font-weight:500; }
-  .tagline{ font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:var(--text-dim); letter-spacing:.02em; max-width:380px; text-align:right; line-height:1.5; }
+  .tagline{ font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:var(--text-dim); letter-spacing:.01em; max-width:400px; text-align:right; line-height:1.55; }
   .tagline b{ color:var(--text); font-weight:600; }
 
-  .ticker-wrap{ border-bottom:1px solid var(--line); background:var(--surface); overflow:hidden; position:relative; height:34px; display:flex; align-items:center; }
-  .ticker-label{ font-family:'IBM Plex Mono',monospace; font-size:10.5px; font-weight:600; letter-spacing:.12em; color:#0B1119; background:var(--amber); padding:0 12px; height:100%; display:flex; align-items:center; flex-shrink:0; z-index:2; position:relative; }
-  .ticker-track{ display:flex; white-space:nowrap; animation:scroll 60s linear infinite; font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--text-dim); }
+  .stat-strip{ display:flex; gap:0; margin-top:18px; max-width:1100px; margin-left:auto; margin-right:auto; border:1px solid var(--line); border-radius:8px; overflow:hidden; background:var(--surface); }
+  .stat{ flex:1; padding:10px 16px; border-right:1px solid var(--line); }
+  .stat:last-child{ border-right:none; }
+  .stat-n{ font-family:'Space Grotesk',sans-serif; font-size:19px; font-weight:700; line-height:1.1; }
+  .stat-l{ font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--text-dimmer); letter-spacing:.08em; text-transform:uppercase; margin-top:3px; }
+  .stat[data-cat="tech"] .stat-n{ color:var(--c-tech); }
+  .stat[data-cat="crypto"] .stat-n{ color:var(--c-crypto); }
+  .stat[data-cat="stock-us"] .stat-n{ color:var(--c-us); }
+  .stat[data-cat="stock-id"] .stat-n{ color:var(--c-id); }
+
+  /* ---------- ticker ---------- */
+  .ticker-wrap{ border-bottom:1px solid var(--line); background:var(--surface); overflow:hidden; position:relative; height:36px; display:flex; align-items:center; }
+  .ticker-label{ font-family:'IBM Plex Mono',monospace; font-size:10.5px; font-weight:600; letter-spacing:.12em; color:var(--amber-ink); background:var(--amber); padding:0 13px; height:100%; display:flex; align-items:center; flex-shrink:0; z-index:2; position:relative; gap:5px; }
+  .ticker-label .dot{ width:5px; height:5px; border-radius:50%; background:var(--amber-ink); animation:pulse 1.6s ease-in-out infinite; }
+  .ticker-track{ display:flex; white-space:nowrap; animation:scroll 90s linear infinite; font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--text-dim); }
   .ticker-wrap:hover .ticker-track{ animation-play-state:paused; }
-  .ticker-track span{ padding:0 28px; }
+  .ticker-track span{ padding:0 26px; display:inline-flex; align-items:center; gap:9px; }
+  .ticker-track .sw{ width:6px; height:6px; border-radius:50%; flex-shrink:0; }
   .ticker-track b{ color:var(--text); font-weight:500; }
   @keyframes scroll{ from{transform:translateX(0);} to{transform:translateX(-50%);} }
 
-  .wrap{ max-width:1080px; margin:0 auto; padding:20px 24px 60px; }
+  .wrap{ max-width:1100px; margin:0 auto; padding:22px 24px 60px; }
 
+  /* ---------- controls ---------- */
   .controls{ display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:16px; }
   .status{ font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--text-dimmer); }
   .status .dot{ display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--amber); margin-right:6px; animation:pulse 1.6s ease-in-out infinite; }
   @keyframes pulse{ 0%,100%{opacity:1;} 50%{opacity:.25;} }
-  .refresh-btn{ font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600; letter-spacing:.06em; color:var(--text); background:var(--surface-hi); border:1px solid var(--line); padding:8px 14px; border-radius:4px; cursor:pointer; transition:border-color .15s; }
+  .refresh-btn{ font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600; letter-spacing:.06em; color:var(--text); background:var(--surface-hi); border:1px solid var(--line); padding:8px 14px; border-radius:6px; cursor:pointer; transition:border-color .15s,color .15s; }
   .refresh-btn:hover{ border-color:var(--amber); color:var(--amber); }
   .refresh-btn:disabled{ opacity:.5; cursor:default; }
+  .refresh-btn .cnt{ color:var(--text-dimmer); margin-left:2px; }
+  .refresh-btn.active-panel .cnt{ color:inherit; opacity:.75; }
 
-  .chips{ display:flex; flex-wrap:wrap; gap:7px; margin-bottom:22px; }
+  .refresh-btn.active-panel{ border-color:var(--amber); color:var(--amber); }
+  .sources-panel{ overflow:hidden; max-height:600px; opacity:1; transition:max-height .25s ease, opacity .2s ease, margin .25s ease; margin-bottom:0; }
+  .sources-panel.hidden{ max-height:0; opacity:0; pointer-events:none; }
+
+  /* ---------- category tabs + search ---------- */
+  .tabbar{ display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-bottom:12px; }
+  .tab{ font-family:'IBM Plex Mono',monospace; font-size:11.5px; font-weight:600; letter-spacing:.02em; padding:7px 12px; border-radius:6px; border:1px solid transparent; background:transparent; color:var(--text-dimmer); cursor:pointer; display:flex; align-items:center; gap:7px; transition:all .12s; }
+  .tab .sw{ width:7px; height:7px; border-radius:50%; }
+  .tab:hover{ color:var(--text-dim); }
+  .tab.active{ background:var(--surface-hi); border-color:var(--line); color:var(--text); }
+  .tab .cnt{ opacity:.6; font-weight:500; }
+  .tab-spacer{ flex:1; }
+  .search-box{ position:relative; }
+  .search-box input{ font-family:'IBM Plex Mono',monospace; font-size:11.5px; background:var(--surface); border:1px solid var(--line); color:var(--text); padding:7px 10px 7px 26px; border-radius:6px; width:170px; transition:border-color .15s,width .15s; }
+  .search-box input:focus{ outline:none; border-color:var(--amber); width:210px; }
+  .search-box input::placeholder{ color:var(--text-dimmer); }
+  .search-box::before{ content:'⌕'; position:absolute; left:9px; top:50%; transform:translateY(-50%); color:var(--text-dimmer); font-size:13px; pointer-events:none; }
+
+  .group-actions{ display:flex; justify-content:space-between; align-items:center; margin-bottom:9px; }
+  .group-title{ font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--text-dimmer); letter-spacing:.1em; text-transform:uppercase; }
+  .group-btns{ display:flex; gap:10px; }
+  .link-btn{ font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--text-dim); background:none; border:none; cursor:pointer; text-decoration:underline; text-underline-offset:2px; padding:0; }
+  .link-btn:hover{ color:var(--amber); }
+
+  .chips{ display:flex; flex-wrap:wrap; gap:7px; margin-bottom:22px; max-height:220px; overflow-y:auto; padding-right:2px; }
+  .chips::-webkit-scrollbar{ width:6px; }
+  .chips::-webkit-scrollbar-thumb{ background:var(--line); border-radius:3px; }
   .chip{ font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:500; padding:6px 10px 6px 8px; border-radius:20px; cursor:pointer; user-select:none; border:1px solid var(--line); background:var(--surface); color:var(--text-dim); display:flex; align-items:center; gap:6px; transition:all .12s; }
   .chip .sw{ width:7px; height:7px; border-radius:50%; flex-shrink:0; }
   .chip.active{ color:var(--text); border-color:var(--chip-color,var(--amber)); background:var(--surface-hi); }
-  .chip.dim{ opacity:.4; }
+  .chip.dim{ opacity:.38; }
+  .chip:hover{ opacity:1; color:var(--text); }
   .chip .cnt{ color:var(--text-dimmer); }
   .chip.active .cnt{ color:inherit; opacity:.6; }
 
+  .direct-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:8px; max-height:420px; overflow-y:auto; padding-right:2px; }
+  .direct-grid::-webkit-scrollbar{ width:6px; }
+  .direct-grid::-webkit-scrollbar-thumb{ background:var(--line); border-radius:3px; }
+  .direct-card{ display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:8px; border:1px solid var(--line); background:var(--surface); text-decoration:none; color:inherit; border-left:2px solid var(--dc-color,var(--line)); transition:border-color .12s, background .12s; }
+  .direct-card:hover{ background:var(--surface-hi); border-color:var(--dc-color,var(--line)); }
+  .direct-card-body{ display:flex; flex-direction:column; gap:2px; min-width:0; flex:1; }
+  .direct-card-name{ font-family:'Inter',sans-serif; font-size:12.5px; font-weight:500; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .direct-card-cat{ font-family:'IBM Plex Mono',monospace; font-size:9.5px; color:var(--text-dimmer); letter-spacing:.05em; text-transform:uppercase; }
+  .direct-card-arrow{ font-family:'IBM Plex Mono',monospace; color:var(--text-dimmer); font-size:13px; flex-shrink:0; transition:color .12s,transform .12s; }
+  .direct-card:hover .direct-card-arrow{ color:var(--amber); transform:translate(1px,-1px); }
+
+  /* ---------- feed ---------- */
   .feed{ display:flex; flex-direction:column; }
-  .item{ display:grid; grid-template-columns:118px 1fr; gap:18px; padding:16px 0; border-bottom:1px solid var(--line-soft); text-decoration:none; color:inherit; }
+  .item{ display:grid; grid-template-columns:132px 1fr; gap:18px; padding:16px 0; border-bottom:1px solid var(--line-soft); text-decoration:none; color:inherit; }
   .item:hover .item-title{ color:var(--amber); }
+  .item:hover .item-meta .src{ color:var(--text); }
   .item-meta{ font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--text-dimmer); padding-top:2px; }
-  .item-meta .src{ display:inline-flex; align-items:center; gap:5px; font-weight:600; letter-spacing:.03em; margin-bottom:5px; }
-  .item-meta .src .sw{ width:6px; height:6px; border-radius:50%; }
+  .item-meta .src{ display:inline-flex; align-items:center; gap:5px; font-weight:600; letter-spacing:.03em; margin-bottom:5px; color:var(--text-dim); transition:color .12s; }
+  .item-meta .src .sw{ width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+  .item-meta .cat-tag{ display:inline-block; margin-top:4px; font-size:9.5px; letter-spacing:.06em; padding:1px 5px; border-radius:3px; border:1px solid var(--line); color:var(--text-dimmer); }
   .item-body{ min-width:0; }
   .item-title{ font-family:'Space Grotesk',sans-serif; font-size:16px; font-weight:600; line-height:1.35; margin:0 0 5px; color:var(--text); transition:color .12s; }
   .item-desc{ font-size:13px; color:var(--text-dim); line-height:1.55; margin:0; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
 
-  .empty, .loading-row{ font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--text-dimmer); padding:40px 0; text-align:center; border-bottom:1px solid var(--line-soft); }
+  .empty, .loading-row{ font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--text-dimmer); padding:44px 0; text-align:center; border-bottom:1px solid var(--line-soft); }
+  .loading-row .bar{ width:120px; height:2px; background:var(--line); margin:14px auto 0; overflow:hidden; border-radius:2px; }
+  .loading-row .bar::after{ content:''; display:block; width:40%; height:100%; background:var(--amber); animation:load 1.1s ease-in-out infinite; }
+  @keyframes load{ 0%{ transform:translateX(-100%);} 100%{ transform:translateX(350%);} }
   .err-row{ font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--text-dimmer); padding:8px 0; border-bottom:1px solid var(--line-soft); }
   .err-row a{ color:var(--text-dim); }
 
-  footer{ max-width:1080px; margin:24px auto 0; padding:16px 24px 0; border-top:1px solid var(--line); font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--text-dimmer); line-height:1.7; }
-
-  @media (max-width:600px){ .item{ grid-template-columns:1fr; gap:6px; } .tagline{ display:none; } }
+  @media (max-width:700px){
+    .item{ grid-template-columns:1fr; gap:6px; }
+    .tagline{ display:none; }
+    .stat-strip{ flex-wrap:wrap; }
+    .stat{ flex:1 1 45%; border-bottom:1px solid var(--line); }
+    .search-box input{ width:120px; }
+    .search-box input:focus{ width:150px; }
+  }
 </style>
 </head>
 <body>
@@ -78,212 +157,80 @@
 <div class="masthead">
   <div class="masthead-row">
     <div class="brand">
-      <span class="brand-mark">WIRE</span>
+      <span class="brand-mark pulse">WIRE</span>
       <h1>SUMBER <span>/ direct-source</span></h1>
     </div>
     <div class="tagline"><b>Tanpa redaksi.</b> Setiap berita di sini diambil langsung dari newsroom &amp; RSS resmi perusahaan — bukan dari Bloomberg, Reuters, atau media lain.</div>
   </div>
+  <div class="stat-strip" id="statStrip"></div>
 </div>
 
 <div class="ticker-wrap">
-  <div class="ticker-label">LIVE</div>
+  <div class="ticker-label"><span class="dot"></span>LIVE</div>
   <div class="ticker-track" id="tickerTrack"><span>Memuat transmisi dari sumber resmi…</span></div>
 </div>
 
 <div class="wrap">
   <div class="controls">
     <div class="status" id="statusLine"><span class="dot"></span>menghubungkan ke newsroom resmi…</div>
-    <button class="refresh-btn" id="refreshBtn">↻ REFRESH ALL</button>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="refresh-btn" id="sourcesToggleBtn">☰ KELOLA SUMBER</button>
+      <button class="refresh-btn" id="directAccessToggleBtn">🔗 AKSES LANGSUNG <span class="cnt">0</span></button>
+      <button class="refresh-btn" id="refreshBtn">↻ REFRESH ALL</button>
+    </div>
   </div>
 
-  <div class="chips" id="chips"></div>
+  <div id="directPanel" class="sources-panel hidden">
+    <div class="group-actions">
+      <span class="group-title">Sumber tanpa artikel otomatis — klik untuk buka newsroom-nya langsung</span>
+    </div>
+    <div class="direct-grid" id="directGrid"></div>
+  </div>
+
+  <div id="sourcesPanel" class="sources-panel hidden">
+    <div class="tabbar" id="tabbar"></div>
+
+    <div class="group-actions">
+      <span class="group-title" id="groupTitle">Sumber</span>
+      <div class="group-btns">
+        <button class="link-btn" id="selectAllBtn">pilih semua</button>
+        <button class="link-btn" id="selectNoneBtn">kosongkan</button>
+      </div>
+    </div>
+
+    <div class="chips" id="chips"></div>
+  </div>
 
   <div class="feed" id="feed">
-    <div class="loading-row">MENARIK RILIS RESMI DARI SETIAP SUMBER…</div>
+    <div class="loading-row">MENARIK RILIS RESMI DARI SETIAP SUMBER…<div class="bar"></div></div>
   </div>
 </div>
 
-<footer>
-  SUMBER menarik data langsung dari feed RSS/press-release resmi milik masing-masing perusahaan. Tidak ada redaksi, editor, atau media pihak ketiga di antaranya — klik judul untuk membaca rilis asli di domain resmi perusahaan. Fetch dilakukan di browser kamu lewat proxy CORS publik (karena sebagian besar newsroom belum mengizinkan fetch langsung dari browser); jika satu proxy gagal, situs otomatis mencoba proxy cadangan. Sumber daftar bisa diedit di berkas <code>index.html</code>, variabel <code>SOURCES</code>. Daftar proyek crypto mencakup mayoritas top ~100 by market cap yang punya blog/newsroom resmi terverifikasi — lihat README untuk catatan soal proyek di luar itu.
-</footer>
-
 <script>
 const SOURCES = [
-  { id:'amd',       name:'AMD',                 color:'#ED1C24', feed:'https://ir.amd.com/news-events/press-releases/rss',        home:'https://ir.amd.com/news-events/press-releases' },
-  { id:'intel',     name:'Intel',               color:'#0071C5', feed:'https://newsroom.intel.com/feed',                           home:'https://newsroom.intel.com/news' },
-  { id:'samsung',   name:'Samsung',             color:'#4C7EF0', feed:'https://news.samsung.com/global/feed',                      home:'https://news.samsung.com/global' },
-  { id:'nvidia',    name:'NVIDIA',              color:'#76B900', feed:'https://nvidianews.nvidia.com/rss.xml',                     home:'https://nvidianews.nvidia.com' },
-  { id:'ethereum',  name:'Ethereum Foundation', color:'#8C9EFF', feed:'https://blog.ethereum.org/en/feed.xml',                     home:'https://blog.ethereum.org' },
-  { id:'apple',     name:'Apple',               color:'#D4D8DC', feed:'https://www.apple.com/newsroom/rss-feed.rss',               home:'https://www.apple.com/newsroom' },
-  { id:'google',    name:'Google',              color:'#4285F4', feed:'https://blog.google/rss/',                                  home:'https://blog.google' },
-  { id:'microsoft', name:'Microsoft',           color:'#4CC2FF', feed:'https://news.microsoft.com/feed/',                          home:'https://news.microsoft.com' },
-  { id:'meta',      name:'Meta',                color:'#5B8DEF', feed:'https://about.fb.com/news/feed/',                           home:'https://about.fb.com/news' },
-  { id:'amazon',    name:'Amazon',              color:'#FF9900', feed:'https://www.aboutamazon.com/rss/feed.rss',                  home:'https://www.aboutamazon.com/news' },
-
+  { id:'amd',       cat:'tech', name:'AMD',                 color:'#ED1C24', feed:'https://ir.amd.com/news-events/press-releases/rss',        home:'https://ir.amd.com/news-events/press-releases' },  { id:'intel',     cat:'tech', name:'Intel',               color:'#0071C5', feed:'https://newsroom.intel.com/feed',                           home:'https://newsroom.intel.com/news' },  { id:'samsung',   cat:'tech', name:'Samsung',             color:'#4C7EF0', feed:'https://news.samsung.com/global/feed',                      home:'https://news.samsung.com/global' },  { id:'nvidia',    cat:'tech', name:'NVIDIA',              color:'#76B900', feed:'https://nvidianews.nvidia.com/rss.xml',                     home:'https://nvidianews.nvidia.com' },  { id:'ethereum',  cat:'tech', name:'Ethereum Foundation', color:'#8C9EFF', feed:'https://blog.ethereum.org/en/feed.xml',                     home:'https://blog.ethereum.org' },  { id:'apple',     cat:'tech', name:'Apple',               color:'#D4D8DC', feed:'https://www.apple.com/newsroom/rss-feed.rss',               home:'https://www.apple.com/newsroom' },  { id:'google',    cat:'tech', name:'Google',              color:'#4285F4', feed:'https://blog.google/rss/',                                  home:'https://blog.google' },  { id:'microsoft', cat:'tech', name:'Microsoft',           color:'#4CC2FF', feed:'https://news.microsoft.com/feed/',                          home:'https://news.microsoft.com' },  { id:'meta',      cat:'tech', name:'Meta',                color:'#5B8DEF', feed:'https://about.fb.com/news/feed/',                           home:'https://about.fb.com/news' },  { id:'amazon',    cat:'tech', name:'Amazon',              color:'#FF9900', feed:'https://www.aboutamazon.com/rss/feed.rss',                  home:'https://www.aboutamazon.com/news' },
   // — Saham blue-chip AS (S&P 100 / Nasdaq-100) —
   // Sebagian besar newsroom perusahaan besar AS tidak punya feed RSS/XML publik yang
   // bisa diverifikasi (banyak newsroom modern cuma render lewat JavaScript). Prinsip
   // situs ini: tidak menebak URL RSS. Untuk entri di bawah, `feed` sengaja disamakan
   // dengan `home` (link newsroom resmi) kecuali dicatat lain — situs otomatis
   // menampilkan tombol link langsung, bukan mencoba parse RSS yang tidak ada.
-  { id:'3m', name:'3M', color:'#FF0000', feed:'https://news.3m.com/', home:'https://news.3m.com/' },
-  { id:'abbott', name:'Abbott', color:'#0057B8', feed:'https://www.abbott.com/media-center.html', home:'https://www.abbott.com/media-center.html' },
-  { id:'abbvie', name:'AbbVie', color:'#071D49', feed:'https://news.abbvie.com/', home:'https://news.abbvie.com/' },
-  { id:'accenture', name:'Accenture', color:'#A100FF', feed:'https://newsroom.accenture.com/', home:'https://newsroom.accenture.com/' },
-  { id:'adobe', name:'Adobe', color:'#FA0F00', feed:'https://news.adobe.com/', home:'https://news.adobe.com/' },
-  { id:'airbnb', name:'Airbnb', color:'#FF5A5F', feed:'https://news.airbnb.com/', home:'https://news.airbnb.com/' },
-  { id:'altria', name:'Altria', color:'#00543D', feed:'https://www.altria.com/newsroom', home:'https://www.altria.com/newsroom' },
-  { id:'amex', name:'American Express', color:'#2E77BC', feed:'https://about.americanexpress.com/newsroom', home:'https://about.americanexpress.com/newsroom' },
-  { id:'aig', name:'AIG', color:'#EE3124', feed:'https://www.aig.com/about-us/newsroom', home:'https://www.aig.com/about-us/newsroom' },
-  { id:'amgen', name:'Amgen', color:'#0091C7', feed:'https://www.amgen.com/newsroom', home:'https://www.amgen.com/newsroom' },
-  { id:'appliedmaterials', name:'Applied Materials', color:'#E4002B', feed:'https://ir.appliedmaterials.com/news-releases', home:'https://ir.appliedmaterials.com/news-releases' },
-  { id:'att', name:'AT&T', color:'#00A8E0', feed:'https://about.att.com/newsroom', home:'https://about.att.com/newsroom' },
-  { id:'bankofamerica', name:'Bank of America', color:'#012169', feed:'https://newsroom.bankofamerica.com/', home:'https://newsroom.bankofamerica.com/' },
-  { id:'berkshire', name:'Berkshire Hathaway', color:'#5A5A5A', feed:'https://www.berkshirehathaway.com/news/newsindex.html', home:'https://www.berkshirehathaway.com/news/newsindex.html' },
-  { id:'blackstone', name:'Blackstone', color:'#00263A', feed:'https://www.blackstone.com/news/', home:'https://www.blackstone.com/news/' },
-  { id:'boeing', name:'Boeing', color:'#0039A6', feed:'https://www.boeing.com/newsroom', home:'https://www.boeing.com/newsroom' },
-  { id:'booking', name:'Booking Holdings', color:'#003580', feed:'https://www.bookingholdings.com/news/', home:'https://www.bookingholdings.com/news/' },
-  { id:'bms', name:'Bristol-Myers Squibb', color:'#BE2BBB', feed:'https://news.bms.com/', home:'https://news.bms.com/' },
-  { id:'broadcom', name:'Broadcom', color:'#CC092F', feed:'https://news.broadcom.com/', home:'https://news.broadcom.com/' },
-  { id:'caterpillar', name:'Caterpillar', color:'#FFCD11', feed:'https://www.caterpillar.com/en/news.html', home:'https://www.caterpillar.com/en/news.html' },
-  { id:'charter', name:'Charter Communications', color:'#004B8D', feed:'https://corporate.charter.com/newsroom', home:'https://corporate.charter.com/newsroom' },
-  { id:'chevron', name:'Chevron', color:'#0072CE', feed:'https://www.chevron.com/newsroom', home:'https://www.chevron.com/newsroom' },
-  { id:'cisco', name:'Cisco', color:'#1BA0D7', feed:'https://newsroom.cisco.com/', home:'https://newsroom.cisco.com/' },
-  { id:'citigroup', name:'Citigroup', color:'#003B70', feed:'https://www.citigroup.com/global/news', home:'https://www.citigroup.com/global/news' },
-  { id:'cocacola', name:'Coca-Cola', color:'#F40009', feed:'https://www.coca-colacompany.com/media-center/press-releases', home:'https://www.coca-colacompany.com/media-center/press-releases' },
-  { id:'comcast', name:'Comcast', color:'#000000', feed:'https://corporate.comcast.com/press/releases', home:'https://corporate.comcast.com/press/releases' },
-  { id:'conocophillips', name:'ConocoPhillips', color:'#EE2E24', feed:'https://www.conocophillips.com/news-media/', home:'https://www.conocophillips.com/news-media/' },
-  { id:'costco', name:'Costco', color:'#005DAA', feed:'https://investor.costco.com/news', home:'https://investor.costco.com/news' },
-  { id:'cvshealth', name:'CVS Health', color:'#CC0000', feed:'https://www.cvshealth.com/news', home:'https://www.cvshealth.com/news' },
-  { id:'danaher', name:'Danaher', color:'#1F2A44', feed:'https://www.danaher.com/media/press-releases', home:'https://www.danaher.com/media/press-releases' },
-  { id:'deere', name:'Deere & Company', color:'#367C2B', feed:'https://www.deere.com/en/our-company/news/', home:'https://www.deere.com/en/our-company/news/' },
-  { id:'dow', name:'Dow Inc', color:'#B0132E', feed:'https://corporate.dow.com/en-us/news.html', home:'https://corporate.dow.com/en-us/news.html' },
-  { id:'dukeenergy', name:'Duke Energy', color:'#005EB8', feed:'https://news.duke-energy.com/', home:'https://news.duke-energy.com/' },
-  { id:'elililly', name:'Eli Lilly', color:'#D50032', feed:'https://www.lilly.com/news', home:'https://www.lilly.com/news' },
-  { id:'emerson', name:'Emerson Electric', color:'#4A148C', feed:'https://www.emerson.com/en-us/news', home:'https://www.emerson.com/en-us/news' },
-  { id:'exelon', name:'Exelon', color:'#004B87', feed:'https://www.exeloncorp.com/newsroom', home:'https://www.exeloncorp.com/newsroom' },
-  { id:'exxonmobil', name:'ExxonMobil', color:'#ED1B2E', feed:'https://corporate.exxonmobil.com/news', home:'https://corporate.exxonmobil.com/news' },
-  { id:'fedex', name:'FedEx', color:'#4D148C', feed:'https://newsroom.fedex.com/', home:'https://newsroom.fedex.com/' },
-  { id:'ford', name:'Ford Motor', color:'#00274E', feed:'https://media.ford.com/', home:'https://media.ford.com/' },
-  { id:'generaldynamics', name:'General Dynamics', color:'#003057', feed:'https://www.gd.com/en/news', home:'https://www.gd.com/en/news' },
-  { id:'geaerospace', name:'GE Aerospace', color:'#0032A0', feed:'https://www.ge.com/news', home:'https://www.ge.com/news' },
-  { id:'gm', name:'General Motors', color:'#00529B', feed:'https://news.gm.com/', home:'https://news.gm.com/' },
-  { id:'gilead', name:'Gilead Sciences', color:'#B01F24', feed:'https://www.gilead.com/news-and-press', home:'https://www.gilead.com/news-and-press' },
-  { id:'goldmansachs', name:'Goldman Sachs', color:'#7399C6', feed:'https://www.goldmansachs.com/media-relations/', home:'https://www.goldmansachs.com/media-relations/' },
-  { id:'homedepot', name:'Home Depot', color:'#F96302', feed:'https://corporate.homedepot.com/newsroom', home:'https://corporate.homedepot.com/newsroom' },
-  { id:'honeywell', name:'Honeywell', color:'#EE3124', feed:'https://www.honeywell.com/us/en/press', home:'https://www.honeywell.com/us/en/press' },
-  { id:'ibm', name:'IBM', color:'#052FAD', feed:'https://newsroom.ibm.com/', home:'https://newsroom.ibm.com/' },
-  { id:'intuit', name:'Intuit', color:'#236CFF', feed:'https://www.intuit.com/company/press-room/', home:'https://www.intuit.com/company/press-room/' },
-  { id:'jnj', name:'Johnson & Johnson', color:'#D51900', feed:'https://www.jnj.com/media-center', home:'https://www.jnj.com/media-center' },
-  { id:'jpmorgan', name:'JPMorgan Chase', color:'#5A2D81', feed:'https://www.jpmorganchase.com/newsroom', home:'https://www.jpmorganchase.com/newsroom' },
-  { id:'kraftheinz', name:'Kraft Heinz', color:'#00263A', feed:'https://www.kraftheinzcompany.com/newsroom.html', home:'https://www.kraftheinzcompany.com/newsroom.html' },
-  { id:'linde', name:'Linde', color:'#00263A', feed:'https://www.linde.com/news-media', home:'https://www.linde.com/news-media' },
-  { id:'lockheedmartin', name:'Lockheed Martin', color:'#00285E', feed:'https://news.lockheedmartin.com/', home:'https://news.lockheedmartin.com/' },
-  { id:'lowes', name:'Lowe\'s', color:'#004990', feed:'https://corporate.lowes.com/newsroom', home:'https://corporate.lowes.com/newsroom' },
-  { id:'mcdonalds', name:'McDonald\'s', color:'#FFC72C', feed:'https://corporate.mcdonalds.com/corpmcd/our-company/newsroom.html', home:'https://corporate.mcdonalds.com/corpmcd/our-company/newsroom.html' },
-  { id:'medtronic', name:'Medtronic', color:'#00A6E0', feed:'https://news.medtronic.com/', home:'https://news.medtronic.com/' },
-  { id:'merck', name:'Merck & Co', color:'#00857C', feed:'https://www.merck.com/news/', home:'https://www.merck.com/news/' },
-  { id:'metlife', name:'MetLife', color:'#00A9E0', feed:'https://www.metlife.com/about-us/newsroom/', home:'https://www.metlife.com/about-us/newsroom/' },
-  { id:'mondelez', name:'Mondelez', color:'#652D86', feed:'https://www.mondelezinternational.com/news', home:'https://www.mondelezinternational.com/news' },
-  { id:'morganstanley', name:'Morgan Stanley', color:'#003057', feed:'https://www.morganstanley.com/press-releases', home:'https://www.morganstanley.com/press-releases' },
-  { id:'netflix', name:'Netflix', color:'#E50914', feed:'https://about.netflix.com/en/news', home:'https://about.netflix.com/en/news' },
-  { id:'nexteraenergy', name:'NextEra Energy', color:'#00539F', feed:'https://www.nexteraenergy.com/newsroom.html', home:'https://www.nexteraenergy.com/newsroom.html' },
-  { id:'nike', name:'Nike', color:'#000000', feed:'https://about.nike.com/en/newsroom', home:'https://about.nike.com/en/newsroom' },
-  { id:'oxy', name:'Occidental Petroleum', color:'#DA291C', feed:'https://www.oxy.com/news/', home:'https://www.oxy.com/news/' },
-  { id:'oracle', name:'Oracle', color:'#F80000', feed:'https://www.oracle.com/news/', home:'https://www.oracle.com/news/' },
-  { id:'pepsico', name:'PepsiCo', color:'#004B93', feed:'https://www.pepsico.com/news', home:'https://www.pepsico.com/news' },
-  { id:'pfizer', name:'Pfizer', color:'#0093D0', feed:'https://www.pfizer.com/news', home:'https://www.pfizer.com/news' },
-  { id:'pmi', name:'Philip Morris Intl', color:'#001E62', feed:'https://www.pmi.com/media-center', home:'https://www.pmi.com/media-center' },
-  { id:'pg', name:'Procter & Gamble', color:'#004C97', feed:'https://us.pg.com/news-and-media/', home:'https://us.pg.com/news-and-media/' },
-  { id:'prologis', name:'Prologis', color:'#00263A', feed:'https://www.prologis.com/news-research/press-releases', home:'https://www.prologis.com/news-research/press-releases' },
-  { id:'qualcomm', name:'Qualcomm', color:'#3253DC', feed:'https://www.qualcomm.com/news', home:'https://www.qualcomm.com/news' },
-  { id:'rtx', name:'RTX Corporation', color:'#00205B', feed:'https://www.rtx.com/news', home:'https://www.rtx.com/news' },
-  { id:'salesforce', name:'Salesforce', color:'#00A1E0', feed:'https://www.salesforce.com/news/', home:'https://www.salesforce.com/news/' },
-  { id:'slb', name:'SLB (Schlumberger)', color:'#0014DC', feed:'https://www.slb.com/news-and-insights/newsroom', home:'https://www.slb.com/news-and-insights/newsroom' },
-  { id:'southerncompany', name:'Southern Company', color:'#0072CE', feed:'https://www.southerncompany.com/newsroom.html', home:'https://www.southerncompany.com/newsroom.html' },
-  { id:'starbucks', name:'Starbucks', color:'#00704A', feed:'https://news.starbucks.com/', home:'https://news.starbucks.com/' },
-  { id:'target', name:'Target', color:'#CC0000', feed:'https://corporate.target.com/press', home:'https://corporate.target.com/press' },
-  { id:'tesla', name:'Tesla', color:'#CC0000', feed:'https://ir.tesla.com/press', home:'https://ir.tesla.com/press' },
-  { id:'texasinstruments', name:'Texas Instruments', color:'#CC0000', feed:'https://news.ti.com/', home:'https://news.ti.com/' },
-  { id:'tmobile', name:'T-Mobile US', color:'#E20074', feed:'https://www.t-mobile.com/news', home:'https://www.t-mobile.com/news' },
-  { id:'unionpacific', name:'Union Pacific', color:'#FFC72C', feed:'https://www.up.com/aboutup/newsroom/', home:'https://www.up.com/aboutup/newsroom/' },
-  { id:'unitedhealth', name:'UnitedHealth Group', color:'#002677', feed:'https://www.unitedhealthgroup.com/newsroom.html', home:'https://www.unitedhealthgroup.com/newsroom.html' },
-  { id:'ups', name:'UPS', color:'#351C15', feed:'https://about.ups.com/us/en/newsroom.html', home:'https://about.ups.com/us/en/newsroom.html' },
-  { id:'usbancorp', name:'US Bancorp', color:'#0A2240', feed:'https://www.usbank.com/newsroom.html', home:'https://www.usbank.com/newsroom.html' },
-  { id:'verizon', name:'Verizon', color:'#000000', feed:'https://www.verizon.com/about/news/', home:'https://www.verizon.com/about/news/' },
-  { id:'visa', name:'Visa', color:'#1A1F71', feed:'https://usa.visa.com/about-visa/newsroom.html', home:'https://usa.visa.com/about-visa/newsroom.html' },
-  { id:'walmart', name:'Walmart', color:'#0071CE', feed:'https://corporate.walmart.com/news', home:'https://corporate.walmart.com/news' },
-  { id:'disney', name:'Walt Disney', color:'#113CCF', feed:'https://thewaltdisneycompany.com/newsroom/', home:'https://thewaltdisneycompany.com/newsroom/' },
-  { id:'wellsfargo', name:'Wells Fargo', color:'#D71E28', feed:'https://newsroom.wf.com/', home:'https://newsroom.wf.com/' },
-  { id:'mastercard', name:'Mastercard', color:'#EB001B', feed:'https://www.mastercard.com/news/', home:'https://www.mastercard.com/news/' },
-
+  { id:'3m', cat:'stock-us', name:'3M', color:'#FF0000', feed:'https://news.3m.com/', home:'https://news.3m.com/' },  { id:'abbott', cat:'stock-us', name:'Abbott', color:'#0057B8', feed:'https://www.abbott.com/media-center.html', home:'https://www.abbott.com/media-center.html' },  { id:'abbvie', cat:'stock-us', name:'AbbVie', color:'#071D49', feed:'https://news.abbvie.com/', home:'https://news.abbvie.com/' },  { id:'accenture', cat:'stock-us', name:'Accenture', color:'#A100FF', feed:'https://newsroom.accenture.com/', home:'https://newsroom.accenture.com/' },  { id:'adobe', cat:'stock-us', name:'Adobe', color:'#FA0F00', feed:'https://news.adobe.com/', home:'https://news.adobe.com/' },  { id:'airbnb', cat:'stock-us', name:'Airbnb', color:'#FF5A5F', feed:'https://news.airbnb.com/', home:'https://news.airbnb.com/' },  { id:'altria', cat:'stock-us', name:'Altria', color:'#00543D', feed:'https://www.altria.com/newsroom', home:'https://www.altria.com/newsroom' },  { id:'amex', cat:'stock-us', name:'American Express', color:'#2E77BC', feed:'https://about.americanexpress.com/newsroom', home:'https://about.americanexpress.com/newsroom' },  { id:'aig', cat:'stock-us', name:'AIG', color:'#EE3124', feed:'https://www.aig.com/about-us/newsroom', home:'https://www.aig.com/about-us/newsroom' },  { id:'amgen', cat:'stock-us', name:'Amgen', color:'#0091C7', feed:'https://www.amgen.com/newsroom', home:'https://www.amgen.com/newsroom' },  { id:'appliedmaterials', cat:'stock-us', name:'Applied Materials', color:'#E4002B', feed:'https://ir.appliedmaterials.com/news-releases', home:'https://ir.appliedmaterials.com/news-releases' },  { id:'att', cat:'stock-us', name:'AT&T', color:'#00A8E0', feed:'https://about.att.com/newsroom', home:'https://about.att.com/newsroom' },  { id:'bankofamerica', cat:'stock-us', name:'Bank of America', color:'#012169', feed:'https://newsroom.bankofamerica.com/', home:'https://newsroom.bankofamerica.com/' },  { id:'berkshire', cat:'stock-us', name:'Berkshire Hathaway', color:'#5A5A5A', feed:'https://www.berkshirehathaway.com/news/newsindex.html', home:'https://www.berkshirehathaway.com/news/newsindex.html' },  { id:'blackstone', cat:'stock-us', name:'Blackstone', color:'#00263A', feed:'https://www.blackstone.com/news/', home:'https://www.blackstone.com/news/' },  { id:'boeing', cat:'stock-us', name:'Boeing', color:'#0039A6', feed:'https://www.boeing.com/newsroom', home:'https://www.boeing.com/newsroom' },  { id:'booking', cat:'stock-us', name:'Booking Holdings', color:'#003580', feed:'https://www.bookingholdings.com/news/', home:'https://www.bookingholdings.com/news/' },  { id:'bms', cat:'stock-us', name:'Bristol-Myers Squibb', color:'#BE2BBB', feed:'https://news.bms.com/', home:'https://news.bms.com/' },  { id:'broadcom', cat:'stock-us', name:'Broadcom', color:'#CC092F', feed:'https://news.broadcom.com/', home:'https://news.broadcom.com/' },  { id:'caterpillar', cat:'stock-us', name:'Caterpillar', color:'#FFCD11', feed:'https://www.caterpillar.com/en/news.html', home:'https://www.caterpillar.com/en/news.html' },  { id:'charter', cat:'stock-us', name:'Charter Communications', color:'#004B8D', feed:'https://corporate.charter.com/newsroom', home:'https://corporate.charter.com/newsroom' },  { id:'chevron', cat:'stock-us', name:'Chevron', color:'#0072CE', feed:'https://www.chevron.com/newsroom', home:'https://www.chevron.com/newsroom' },  { id:'cisco', cat:'stock-us', name:'Cisco', color:'#1BA0D7', feed:'https://newsroom.cisco.com/', home:'https://newsroom.cisco.com/' },  { id:'citigroup', cat:'stock-us', name:'Citigroup', color:'#003B70', feed:'https://www.citigroup.com/global/news', home:'https://www.citigroup.com/global/news' },  { id:'cocacola', cat:'stock-us', name:'Coca-Cola', color:'#F40009', feed:'https://www.coca-colacompany.com/media-center/press-releases', home:'https://www.coca-colacompany.com/media-center/press-releases' },  { id:'comcast', cat:'stock-us', name:'Comcast', color:'#000000', feed:'https://corporate.comcast.com/press/releases', home:'https://corporate.comcast.com/press/releases' },  { id:'conocophillips', cat:'stock-us', name:'ConocoPhillips', color:'#EE2E24', feed:'https://www.conocophillips.com/news-media/', home:'https://www.conocophillips.com/news-media/' },  { id:'costco', cat:'stock-us', name:'Costco', color:'#005DAA', feed:'https://investor.costco.com/news', home:'https://investor.costco.com/news' },  { id:'cvshealth', cat:'stock-us', name:'CVS Health', color:'#CC0000', feed:'https://www.cvshealth.com/news', home:'https://www.cvshealth.com/news' },  { id:'danaher', cat:'stock-us', name:'Danaher', color:'#1F2A44', feed:'https://www.danaher.com/media/press-releases', home:'https://www.danaher.com/media/press-releases' },  { id:'deere', cat:'stock-us', name:'Deere & Company', color:'#367C2B', feed:'https://www.deere.com/en/our-company/news/', home:'https://www.deere.com/en/our-company/news/' },  { id:'dow', cat:'stock-us', name:'Dow Inc', color:'#B0132E', feed:'https://corporate.dow.com/en-us/news.html', home:'https://corporate.dow.com/en-us/news.html' },  { id:'dukeenergy', cat:'stock-us', name:'Duke Energy', color:'#005EB8', feed:'https://news.duke-energy.com/', home:'https://news.duke-energy.com/' },  { id:'elililly', cat:'stock-us', name:'Eli Lilly', color:'#D50032', feed:'https://www.lilly.com/news', home:'https://www.lilly.com/news' },  { id:'emerson', cat:'stock-us', name:'Emerson Electric', color:'#4A148C', feed:'https://www.emerson.com/en-us/news', home:'https://www.emerson.com/en-us/news' },  { id:'exelon', cat:'stock-us', name:'Exelon', color:'#004B87', feed:'https://www.exeloncorp.com/newsroom', home:'https://www.exeloncorp.com/newsroom' },  { id:'exxonmobil', cat:'stock-us', name:'ExxonMobil', color:'#ED1B2E', feed:'https://corporate.exxonmobil.com/news', home:'https://corporate.exxonmobil.com/news' },  { id:'fedex', cat:'stock-us', name:'FedEx', color:'#4D148C', feed:'https://newsroom.fedex.com/', home:'https://newsroom.fedex.com/' },  { id:'ford', cat:'stock-us', name:'Ford Motor', color:'#00274E', feed:'https://media.ford.com/', home:'https://media.ford.com/' },  { id:'generaldynamics', cat:'stock-us', name:'General Dynamics', color:'#003057', feed:'https://www.gd.com/en/news', home:'https://www.gd.com/en/news' },  { id:'geaerospace', cat:'stock-us', name:'GE Aerospace', color:'#0032A0', feed:'https://www.ge.com/news', home:'https://www.ge.com/news' },  { id:'gm', cat:'stock-us', name:'General Motors', color:'#00529B', feed:'https://news.gm.com/', home:'https://news.gm.com/' },  { id:'gilead', cat:'stock-us', name:'Gilead Sciences', color:'#B01F24', feed:'https://www.gilead.com/news-and-press', home:'https://www.gilead.com/news-and-press' },  { id:'goldmansachs', cat:'stock-us', name:'Goldman Sachs', color:'#7399C6', feed:'https://www.goldmansachs.com/media-relations/', home:'https://www.goldmansachs.com/media-relations/' },  { id:'homedepot', cat:'stock-us', name:'Home Depot', color:'#F96302', feed:'https://corporate.homedepot.com/newsroom', home:'https://corporate.homedepot.com/newsroom' },  { id:'honeywell', cat:'stock-us', name:'Honeywell', color:'#EE3124', feed:'https://www.honeywell.com/us/en/press', home:'https://www.honeywell.com/us/en/press' },  { id:'ibm', cat:'stock-us', name:'IBM', color:'#052FAD', feed:'https://newsroom.ibm.com/', home:'https://newsroom.ibm.com/' },  { id:'intuit', cat:'stock-us', name:'Intuit', color:'#236CFF', feed:'https://www.intuit.com/company/press-room/', home:'https://www.intuit.com/company/press-room/' },  { id:'jnj', cat:'stock-us', name:'Johnson & Johnson', color:'#D51900', feed:'https://www.jnj.com/media-center', home:'https://www.jnj.com/media-center' },  { id:'jpmorgan', cat:'stock-us', name:'JPMorgan Chase', color:'#5A2D81', feed:'https://www.jpmorganchase.com/newsroom', home:'https://www.jpmorganchase.com/newsroom' },  { id:'kraftheinz', cat:'stock-us', name:'Kraft Heinz', color:'#00263A', feed:'https://www.kraftheinzcompany.com/newsroom.html', home:'https://www.kraftheinzcompany.com/newsroom.html' },  { id:'linde', cat:'stock-us', name:'Linde', color:'#00263A', feed:'https://www.linde.com/news-media', home:'https://www.linde.com/news-media' },  { id:'lockheedmartin', cat:'stock-us', name:'Lockheed Martin', color:'#00285E', feed:'https://news.lockheedmartin.com/', home:'https://news.lockheedmartin.com/' },  { id:'lowes', cat:'stock-us', name:'Lowe\'s', color:'#004990', feed:'https://corporate.lowes.com/newsroom', home:'https://corporate.lowes.com/newsroom' },  { id:'mcdonalds', cat:'stock-us', name:'McDonald\'s', color:'#FFC72C', feed:'https://corporate.mcdonalds.com/corpmcd/our-company/newsroom.html', home:'https://corporate.mcdonalds.com/corpmcd/our-company/newsroom.html' },  { id:'medtronic', cat:'stock-us', name:'Medtronic', color:'#00A6E0', feed:'https://news.medtronic.com/', home:'https://news.medtronic.com/' },  { id:'merck', cat:'stock-us', name:'Merck & Co', color:'#00857C', feed:'https://www.merck.com/news/', home:'https://www.merck.com/news/' },  { id:'metlife', cat:'stock-us', name:'MetLife', color:'#00A9E0', feed:'https://www.metlife.com/about-us/newsroom/', home:'https://www.metlife.com/about-us/newsroom/' },  { id:'mondelez', cat:'stock-us', name:'Mondelez', color:'#652D86', feed:'https://www.mondelezinternational.com/news', home:'https://www.mondelezinternational.com/news' },  { id:'morganstanley', cat:'stock-us', name:'Morgan Stanley', color:'#003057', feed:'https://www.morganstanley.com/press-releases', home:'https://www.morganstanley.com/press-releases' },  { id:'netflix', cat:'stock-us', name:'Netflix', color:'#E50914', feed:'https://about.netflix.com/en/news', home:'https://about.netflix.com/en/news' },  { id:'nexteraenergy', cat:'stock-us', name:'NextEra Energy', color:'#00539F', feed:'https://www.nexteraenergy.com/newsroom.html', home:'https://www.nexteraenergy.com/newsroom.html' },  { id:'nike', cat:'stock-us', name:'Nike', color:'#000000', feed:'https://about.nike.com/en/newsroom', home:'https://about.nike.com/en/newsroom' },  { id:'oxy', cat:'stock-us', name:'Occidental Petroleum', color:'#DA291C', feed:'https://www.oxy.com/news/', home:'https://www.oxy.com/news/' },  { id:'oracle', cat:'stock-us', name:'Oracle', color:'#F80000', feed:'https://www.oracle.com/news/', home:'https://www.oracle.com/news/' },  { id:'pepsico', cat:'stock-us', name:'PepsiCo', color:'#004B93', feed:'https://www.pepsico.com/news', home:'https://www.pepsico.com/news' },  { id:'pfizer', cat:'stock-us', name:'Pfizer', color:'#0093D0', feed:'https://www.pfizer.com/news', home:'https://www.pfizer.com/news' },  { id:'pmi', cat:'stock-us', name:'Philip Morris Intl', color:'#001E62', feed:'https://www.pmi.com/media-center', home:'https://www.pmi.com/media-center' },  { id:'pg', cat:'stock-us', name:'Procter & Gamble', color:'#004C97', feed:'https://us.pg.com/news-and-media/', home:'https://us.pg.com/news-and-media/' },  { id:'prologis', cat:'stock-us', name:'Prologis', color:'#00263A', feed:'https://www.prologis.com/news-research/press-releases', home:'https://www.prologis.com/news-research/press-releases' },  { id:'qualcomm', cat:'stock-us', name:'Qualcomm', color:'#3253DC', feed:'https://www.qualcomm.com/news', home:'https://www.qualcomm.com/news' },  { id:'rtx', cat:'stock-us', name:'RTX Corporation', color:'#00205B', feed:'https://www.rtx.com/news', home:'https://www.rtx.com/news' },  { id:'salesforce', cat:'stock-us', name:'Salesforce', color:'#00A1E0', feed:'https://www.salesforce.com/news/', home:'https://www.salesforce.com/news/' },  { id:'slb', cat:'stock-us', name:'SLB (Schlumberger)', color:'#0014DC', feed:'https://www.slb.com/news-and-insights/newsroom', home:'https://www.slb.com/news-and-insights/newsroom' },  { id:'southerncompany', cat:'stock-us', name:'Southern Company', color:'#0072CE', feed:'https://www.southerncompany.com/newsroom.html', home:'https://www.southerncompany.com/newsroom.html' },  { id:'starbucks', cat:'stock-us', name:'Starbucks', color:'#00704A', feed:'https://news.starbucks.com/', home:'https://news.starbucks.com/' },  { id:'target', cat:'stock-us', name:'Target', color:'#CC0000', feed:'https://corporate.target.com/press', home:'https://corporate.target.com/press' },  { id:'tesla', cat:'stock-us', name:'Tesla', color:'#CC0000', feed:'https://ir.tesla.com/press', home:'https://ir.tesla.com/press' },  { id:'texasinstruments', cat:'stock-us', name:'Texas Instruments', color:'#CC0000', feed:'https://news.ti.com/', home:'https://news.ti.com/' },  { id:'tmobile', cat:'stock-us', name:'T-Mobile US', color:'#E20074', feed:'https://www.t-mobile.com/news', home:'https://www.t-mobile.com/news' },  { id:'unionpacific', cat:'stock-us', name:'Union Pacific', color:'#FFC72C', feed:'https://www.up.com/aboutup/newsroom/', home:'https://www.up.com/aboutup/newsroom/' },  { id:'unitedhealth', cat:'stock-us', name:'UnitedHealth Group', color:'#002677', feed:'https://www.unitedhealthgroup.com/newsroom.html', home:'https://www.unitedhealthgroup.com/newsroom.html' },  { id:'ups', cat:'stock-us', name:'UPS', color:'#351C15', feed:'https://about.ups.com/us/en/newsroom.html', home:'https://about.ups.com/us/en/newsroom.html' },  { id:'usbancorp', cat:'stock-us', name:'US Bancorp', color:'#0A2240', feed:'https://www.usbank.com/newsroom.html', home:'https://www.usbank.com/newsroom.html' },  { id:'verizon', cat:'stock-us', name:'Verizon', color:'#000000', feed:'https://www.verizon.com/about/news/', home:'https://www.verizon.com/about/news/' },  { id:'visa', cat:'stock-us', name:'Visa', color:'#1A1F71', feed:'https://usa.visa.com/about-visa/newsroom.html', home:'https://usa.visa.com/about-visa/newsroom.html' },  { id:'walmart', cat:'stock-us', name:'Walmart', color:'#0071CE', feed:'https://corporate.walmart.com/news', home:'https://corporate.walmart.com/news' },  { id:'disney', cat:'stock-us', name:'Walt Disney', color:'#113CCF', feed:'https://thewaltdisneycompany.com/newsroom/', home:'https://thewaltdisneycompany.com/newsroom/' },  { id:'wellsfargo', cat:'stock-us', name:'Wells Fargo', color:'#D71E28', feed:'https://newsroom.wf.com/', home:'https://newsroom.wf.com/' },  { id:'mastercard', cat:'stock-us', name:'Mastercard', color:'#EB001B', feed:'https://www.mastercard.com/news/', home:'https://www.mastercard.com/news/' },
+  // — Saham blue-chip Indonesia (LQ45 / IDX30) —
+  // Sama seperti saham AS: hampir tidak ada emiten Indonesia yang punya feed RSS/XML
+  // resmi terpisah dari halaman investor relations-nya, jadi feed = home di semua entri
+  // di bawah. Lihat README untuk catatan soal kenapa situs ini SENGAJA tidak memasukkan
+  // daftar "saham lowcap viral / gorengan" secara spesifik.
+  { id:'bbca', cat:'stock-id', name:'Bank Central Asia (BBCA)', color:'#004A9C', feed:'https://www.bca.co.id/en/tentang-bca/Hubungan-Investor', home:'https://www.bca.co.id/en/tentang-bca/Hubungan-Investor' },  { id:'bbri', cat:'stock-id', name:'Bank Rakyat Indonesia (BBRI)', color:'#00529C', feed:'https://bri.co.id/web/investor-relation', home:'https://bri.co.id/web/investor-relation' },  { id:'bmri', cat:'stock-id', name:'Bank Mandiri (BMRI)', color:'#003D79', feed:'https://bankmandiri.co.id/investor-relations', home:'https://bankmandiri.co.id/investor-relations' },  { id:'bbni', cat:'stock-id', name:'Bank Negara Indonesia (BBNI)', color:'#F7941D', feed:'https://www.bni.co.id/id-id/perusahaan/hubunganinvestor', home:'https://www.bni.co.id/id-id/perusahaan/hubunganinvestor' },  { id:'bris', cat:'stock-id', name:'Bank Syariah Indonesia (BRIS)', color:'#00A19A', feed:'https://ir.bankbsi.co.id/', home:'https://ir.bankbsi.co.id/' },  { id:'arto', cat:'stock-id', name:'Bank Jago (ARTO)', color:'#FFB800', feed:'https://www.jago.com/id/investor-relations', home:'https://www.jago.com/id/investor-relations' },  { id:'tlkm', cat:'stock-id', name:'Telkom Indonesia (TLKM)', color:'#E4002B', feed:'https://www.telkom.co.id/sites/investor/id_ID/page/tentang-investor', home:'https://www.telkom.co.id/sites/investor/id_ID/page/tentang-investor' },  { id:'excl', cat:'stock-id', name:'XL Axiata (EXCL)', color:'#1E4E9C', feed:'https://www.xlaxiata.co.id/en/investor-relations', home:'https://www.xlaxiata.co.id/en/investor-relations' },  { id:'isat', cat:'stock-id', name:'Indosat Ooredoo Hutchison (ISAT)', color:'#FDB913', feed:'https://indosatooredoohutchison.co.id/id/investor-relations', home:'https://indosatooredoohutchison.co.id/id/investor-relations' },  { id:'asii', cat:'stock-id', name:'Astra International (ASII)', color:'#00539B', feed:'https://www.astra.co.id/Investor-Relation', home:'https://www.astra.co.id/Investor-Relation' },  { id:'unvr', cat:'stock-id', name:'Unilever Indonesia (UNVR)', color:'#1F36C7', feed:'https://www.unilever.co.id/investor-relations/', home:'https://www.unilever.co.id/investor-relations/' },  { id:'icbp', cat:'stock-id', name:'Indofood CBP (ICBP)', color:'#ED1C24', feed:'https://www.indofoodcbp.com/investor-relations', home:'https://www.indofoodcbp.com/investor-relations' },  { id:'indf', cat:'stock-id', name:'Indofood Sukses Makmur (INDF)', color:'#ED1C24', feed:'https://www.indofood.com/investor-relation', home:'https://www.indofood.com/investor-relation' },  { id:'mybf', cat:'stock-id', name:'Mayora Indah (MYOR)', color:'#0072BC', feed:'https://www.mayoraindah.co.id/investor-relation/', home:'https://www.mayoraindah.co.id/investor-relation/' },  { id:'ggrm', cat:'stock-id', name:'Gudang Garam (GGRM)', color:'#C8102E', feed:'https://www.gudanggaramtbk.com/investor-relations', home:'https://www.gudanggaramtbk.com/investor-relations' },  { id:'hmsp', cat:'stock-id', name:'HM Sampoerna (HMSP)', color:'#B01E2F', feed:'https://www.sampoerna.com/en/investor-relations', home:'https://www.sampoerna.com/en/investor-relations' },  { id:'untr', cat:'stock-id', name:'United Tractors (UNTR)', color:'#FDB913', feed:'https://www.unitedtractors.com/en/investor-relation', home:'https://www.unitedtractors.com/en/investor-relation' },  { id:'pgas', cat:'stock-id', name:'Perusahaan Gas Negara (PGAS)', color:'#005BAC', feed:'https://www.pgn.co.id/investor-relations', home:'https://www.pgn.co.id/investor-relations' },  { id:'smgr', cat:'stock-id', name:'Semen Indonesia / SIG (SMGR)', color:'#8B0000', feed:'https://sig.id/investor-relations/', home:'https://sig.id/investor-relations/' },  { id:'intp', cat:'stock-id', name:'Indocement (INTP)', color:'#003876', feed:'https://www.indocement.co.id/en/investor-relations/', home:'https://www.indocement.co.id/en/investor-relations/' },  { id:'antm', cat:'stock-id', name:'Aneka Tambang (ANTM)', color:'#FDB813', feed:'https://www.antam.com/en/investor-relations', home:'https://www.antam.com/en/investor-relations' },  { id:'adro', cat:'stock-id', name:'Adaro / Alamtri Resources (ADRO)', color:'#00539B', feed:'https://www.adaro.com/en/investor-relations', home:'https://www.adaro.com/en/investor-relations' },  { id:'ptba', cat:'stock-id', name:'Bukit Asam (PTBA)', color:'#000000', feed:'https://www.ptba.co.id/en/investor', home:'https://www.ptba.co.id/en/investor' },  { id:'inco', cat:'stock-id', name:'Vale Indonesia (INCO)', color:'#00843D', feed:'https://www.vale.com/indonesia/EN/investors/Pages/default.aspx', home:'https://www.vale.com/indonesia/EN/investors/Pages/default.aspx' },  { id:'mdka', cat:'stock-id', name:'Merdeka Copper Gold (MDKA)', color:'#B8860B', feed:'https://www.merdekacoppergold.com/investor-relations/', home:'https://www.merdekacoppergold.com/investor-relations/' },  { id:'amman', cat:'stock-id', name:'Amman Mineral (AMMN)', color:'#8B4513', feed:'https://amman.co.id/investor-relations/', home:'https://amman.co.id/investor-relations/' },  { id:'brpt', cat:'stock-id', name:'Barito Pacific (BRPT)', color:'#00563F', feed:'https://www.barito-pacific.com/investor-relation/', home:'https://www.barito-pacific.com/investor-relation/' },  { id:'tpia', cat:'stock-id', name:'Chandra Asri (TPIA)', color:'#003DA5', feed:'https://www.chandra-asri.com/investor-relations', home:'https://www.chandra-asri.com/investor-relations' },  { id:'cpin', cat:'stock-id', name:'Charoen Pokphand Indonesia (CPIN)', color:'#ED1C24', feed:'https://www.cp.co.id/investor-relations', home:'https://www.cp.co.id/investor-relations' },  { id:'japfa', cat:'stock-id', name:'Japfa Comfeed (JPFA)', color:'#004B87', feed:'https://www.japfacomfeed.co.id/investor_relation', home:'https://www.japfacomfeed.co.id/investor_relation' },  { id:'klbf', cat:'stock-id', name:'Kalbe Farma (KLBF)', color:'#00A651', feed:'https://www.kalbe.co.id/investor-relations', home:'https://www.kalbe.co.id/investor-relations' },  { id:'sido', cat:'stock-id', name:'Sido Muncul (SIDO)', color:'#F7941D', feed:'https://www.sidomuncul.com/investor-relation/', home:'https://www.sidomuncul.com/investor-relation/' },  { id:'akra', cat:'stock-id', name:'AKR Corporindo (AKRA)', color:'#003876', feed:'https://www.akr.co.id/investor-relations', home:'https://www.akr.co.id/investor-relations' },  { id:'medc', cat:'stock-id', name:'Medco Energi (MEDC)', color:'#003876', feed:'https://www.medcoenergi.com/en/investors', home:'https://www.medcoenergi.com/en/investors' },  { id:'pgeo', cat:'stock-id', name:'Pertamina Geothermal Energy (PGEO)', color:'#DA291C', feed:'https://pge.pertamina.com/en/investor-relations', home:'https://pge.pertamina.com/en/investor-relations' },  { id:'buka', cat:'stock-id', name:'Bukalapak (BUKA)', color:'#E31E24', feed:'https://www.bukalapak.com/investor-relations', home:'https://www.bukalapak.com/investor-relations' },  { id:'goto', cat:'stock-id', name:'GoTo Gojek Tokopedia (GOTO)', color:'#00AA13', feed:'https://www.gotocompany.com/en/investors', home:'https://www.gotocompany.com/en/investors' },  { id:'bbtn', cat:'stock-id', name:'Bank Tabungan Negara (BBTN)', color:'#F7941D', feed:'https://www.btn.co.id/en/Investor-Relations', home:'https://www.btn.co.id/en/Investor-Relations' },  { id:'ptro', cat:'stock-id', name:'Petrosea (PTRO)', color:'#003876', feed:'https://www.petrosea.com/investors', home:'https://www.petrosea.com/investors' },  { id:'bren', cat:'stock-id', name:'Barito Renewables Energy (BREN)', color:'#00A650', feed:'https://www.baritorenewables.co.id/en/investor-relations/', home:'https://www.baritorenewables.co.id/en/investor-relations/' },
+  { id:'idx-keterbukaan', cat:'stock-id', name:'IDX — Keterbukaan Informasi', color:'#003876', feed:'https://www.idx.co.id/id/perusahaan-tercatat/keterbukaan-informasi/', home:'https://www.idx.co.id/id/perusahaan-tercatat/keterbukaan-informasi/' },
   // — Crypto & stablecoin projects —
-  { id:'tether',      name:'Tether',            color:'#26A17B', feed:'https://tether.io/news/feed/',                              home:'https://tether.io/news/' },
-  { id:'bnbchain',    name:'BNB Chain',         color:'#F0B90B', feed:'https://www.bnbchain.org/en/blog/rss.xml',                  home:'https://www.bnbchain.org/en/blog' },
-  { id:'circle',      name:'Circle (USDC)',     color:'#2775CA', feed:'https://www.circle.com/blog-all/rss.xml',                   home:'https://www.circle.com/blog' },
-  { id:'ripple',      name:'Ripple (XRP)',      color:'#23292F', feed:'https://ripple.com/insights/feed/',                         home:'https://ripple.com/insights/' },
-  { id:'solana',      name:'Solana',            color:'#14F195', feed:'https://solana.com/news/rss.xml',                          home:'https://solana.com/news' },
-  { id:'tron',        name:'TRON DAO',          color:'#EF0027', feed:'https://trondao.org/blog/feed/',                           home:'https://trondao.org/blog/' },
-  { id:'hyperliquid', name:'Hyperliquid',       color:'#00D2B3', feed:'https://app.hyperliquid.xyz/announcements',                home:'https://app.hyperliquid.xyz/announcements' },
-  { id:'dogecoin',    name:'Dogecoin Fdn',      color:'#C2A633', feed:'https://foundation.dogecoin.com/index.xml',                home:'https://foundation.dogecoin.com/blog/' },
-  { id:'leo',         name:'UNUS SED LEO',      color:'#08C58E', feed:'https://blog.bitfinex.com/tag/unus-sed-leo/feed/',         home:'https://blog.bitfinex.com/tag/unus-sed-leo/' },
-  { id:'cardano',     name:'Cardano',           color:'#0033AD', feed:'https://cardanofoundation.org/blog/rss.xml',               home:'https://cardanofoundation.org/blog' },
-  { id:'monero',      name:'Monero',            color:'#FF6600', feed:'https://www.getmonero.org/feed.xml',                       home:'https://www.getmonero.org/blog/' },
-  { id:'chainlink',   name:'Chainlink',         color:'#375BD2', feed:'https://blog.chain.link/feed/',                            home:'https://blog.chain.link/' },
-  { id:'stellar',     name:'Stellar',           color:'#08B5E5', feed:'https://stellar.org/blog/feed',                            home:'https://stellar.org/blog' },
-  { id:'dai',         name:'Sky (DAI/MakerDAO)',color:'#F4B731', feed:'https://forum.makerdao.com/latest.rss',                    home:'https://forum.makerdao.com/' },
-  { id:'ethena',      name:'Ethena (USDe)',     color:'#7C3AED', feed:'https://ethena.fi/blog/rss.xml',                           home:'https://ethena.fi/blog' },
-  { id:'canton',      name:'Canton Network',    color:'#6E56CF', feed:'https://canton.network/media-resources',                   home:'https://canton.network/media-resources' },
-  { id:'litecoin',    name:'Litecoin',          color:'#345D9D', feed:'https://blog.litecoin.org/feed/',                          home:'https://blog.litecoin.org/' },
-  { id:'hedera',      name:'Hedera (HBAR)',     color:'#3F00FF', feed:'https://hedera.com/blog/feed',                             home:'https://hedera.com/blog/' },
-  { id:'avalanche',   name:'Avalanche',         color:'#E84142', feed:'https://www.avax.network/about/blog/rss.xml',              home:'https://www.avax.network/about/blog' },
-  { id:'pyusd',       name:'PayPal (PYUSD)',    color:'#003087', feed:'https://newsroom.paypal-corp.com/rss/news-cryptocurrency.xml', home:'https://newsroom.paypal-corp.com/news-cryptocurrency' },
-
+  { id:'tether',      cat:'crypto', name:'Tether',            color:'#26A17B', feed:'https://tether.io/news/feed/',                              home:'https://tether.io/news/' },  { id:'bnbchain',    cat:'crypto', name:'BNB Chain',         color:'#F0B90B', feed:'https://www.bnbchain.org/en/blog/rss.xml',                  home:'https://www.bnbchain.org/en/blog' },  { id:'circle',      cat:'crypto', name:'Circle (USDC)',     color:'#2775CA', feed:'https://www.circle.com/blog-all/rss.xml',                   home:'https://www.circle.com/blog' },  { id:'ripple',      cat:'crypto', name:'Ripple (XRP)',      color:'#23292F', feed:'https://ripple.com/insights/feed/',                         home:'https://ripple.com/insights/' },  { id:'solana',      cat:'crypto', name:'Solana',            color:'#14F195', feed:'https://solana.com/news/rss.xml',                          home:'https://solana.com/news' },  { id:'tron',        cat:'crypto', name:'TRON DAO',          color:'#EF0027', feed:'https://trondao.org/blog/feed/',                           home:'https://trondao.org/blog/' },  { id:'hyperliquid', cat:'crypto', name:'Hyperliquid',       color:'#00D2B3', feed:'https://app.hyperliquid.xyz/announcements',                home:'https://app.hyperliquid.xyz/announcements' },  { id:'dogecoin',    cat:'crypto', name:'Dogecoin Fdn',      color:'#C2A633', feed:'https://foundation.dogecoin.com/index.xml',                home:'https://foundation.dogecoin.com/blog/' },  { id:'leo',         cat:'crypto', name:'UNUS SED LEO',      color:'#08C58E', feed:'https://blog.bitfinex.com/tag/unus-sed-leo/feed/',         home:'https://blog.bitfinex.com/tag/unus-sed-leo/' },  { id:'cardano',     cat:'crypto', name:'Cardano',           color:'#0033AD', feed:'https://cardanofoundation.org/blog/rss.xml',               home:'https://cardanofoundation.org/blog' },  { id:'monero',      cat:'crypto', name:'Monero',            color:'#FF6600', feed:'https://www.getmonero.org/feed.xml',                       home:'https://www.getmonero.org/blog/' },  { id:'chainlink',   cat:'crypto', name:'Chainlink',         color:'#375BD2', feed:'https://blog.chain.link/feed/',                            home:'https://blog.chain.link/' },  { id:'stellar',     cat:'crypto', name:'Stellar',           color:'#08B5E5', feed:'https://stellar.org/blog/feed',                            home:'https://stellar.org/blog' },  { id:'dai',         cat:'crypto', name:'Sky (DAI/MakerDAO)',color:'#F4B731', feed:'https://forum.makerdao.com/latest.rss',                    home:'https://forum.makerdao.com/' },  { id:'ethena',      cat:'crypto', name:'Ethena (USDe)',     color:'#7C3AED', feed:'https://ethena.fi/blog/rss.xml',                           home:'https://ethena.fi/blog' },  { id:'canton',      cat:'crypto', name:'Canton Network',    color:'#6E56CF', feed:'https://canton.network/media-resources',                   home:'https://canton.network/media-resources' },  { id:'litecoin',    cat:'crypto', name:'Litecoin',          color:'#345D9D', feed:'https://blog.litecoin.org/feed/',                          home:'https://blog.litecoin.org/' },  { id:'hedera',      cat:'crypto', name:'Hedera (HBAR)',     color:'#3F00FF', feed:'https://hedera.com/blog/feed',                             home:'https://hedera.com/blog/' },  { id:'avalanche',   cat:'crypto', name:'Avalanche',         color:'#E84142', feed:'https://www.avax.network/about/blog/rss.xml',              home:'https://www.avax.network/about/blog' },  { id:'pyusd',       cat:'crypto', name:'PayPal (PYUSD)',    color:'#003087', feed:'https://newsroom.paypal-corp.com/rss/news-cryptocurrency.xml', home:'https://newsroom.paypal-corp.com/news-cryptocurrency' },
   // — Layer 1 / Layer 2 blockchains (perluasan top ~11–100) —
-  { id:'polkadot',    name:'Polkadot',          color:'#E6007A', feed:'https://polkadot.network/blog/feed',                       home:'https://polkadot.network/blog/' },
-  { id:'cosmos',      name:'Cosmos',            color:'#2E3148', feed:'https://blog.cosmos.network/feed',                         home:'https://blog.cosmos.network/' },
-  { id:'sui',         name:'Sui',               color:'#4DA2FF', feed:'https://blog.sui.io/rss/',                                 home:'https://blog.sui.io/' },
-  { id:'aptos',       name:'Aptos',             color:'#00D0B0', feed:'https://aptosnetwork.com/currents/rss.xml',                home:'https://aptosnetwork.com/currents' },
-  { id:'ton',         name:'Toncoin (TON)',     color:'#0098EA', feed:'https://blog.ton.org/rss.xml',                             home:'https://blog.ton.org/' },
-  { id:'nearprotocol',name:'NEAR Protocol',     color:'#00EC97', feed:'https://nearprotocol.com/feed/',                           home:'https://www.near.org/blog' },
-  { id:'algorand',    name:'Algorand',          color:'#000000', feed:'https://medium.com/feed/algorand',                        home:'https://algorand.co/' },
-  { id:'filecoin',    name:'Filecoin',          color:'#0090FF', feed:'https://filecoin.io/blog/feed/index.xml',                 home:'https://www.filecoin.io/blog' },
-  { id:'celestia',    name:'Celestia',          color:'#7B2BF9', feed:'https://blog.celestia.org/rss/',                          home:'https://blog.celestia.org/' },
-  { id:'injective',   name:'Injective',         color:'#00F2FE', feed:'https://injective.com/blog/feed',                          home:'https://injective.com/blog' },
-  { id:'polygon',     name:'Polygon',           color:'#8247E5', feed:'https://polygon.technology/blog/feed',                     home:'https://polygon.technology/blog' },
-  { id:'arbitrum',    name:'Arbitrum',          color:'#12AAFF', feed:'https://arbitrumfoundation.medium.com/feed',               home:'https://arbitrumfoundation.medium.com/' },
-  { id:'optimism',    name:'Optimism',          color:'#FF0420', feed:'https://api.paragraph.com/blogs/rss/@the-optimism-collective', home:'https://paragraph.com/@the-optimism-collective' },
-  { id:'starknet',    name:'Starknet',          color:'#EC796B', feed:'https://medium.com/feed/@StarkWare',                       home:'https://www.starknet.io/blog/' },
-  { id:'zksync',      name:'ZKsync',            color:'#4E529A', feed:'https://api.paragraph.com/blogs/rss/@zksync',              home:'https://paragraph.com/@zksync' },
-  { id:'zilliqa',     name:'Zilliqa',           color:'#49C1BF', feed:'https://blog.zilliqa.com/feed',                            home:'https://blog.zilliqa.com/' },
-  { id:'thegraph',    name:'The Graph',         color:'#6747ED', feed:'https://thegraph.com/blog/rss.xml',                        home:'https://thegraph.com/blog/' },
-  { id:'kava',        name:'Kava',              color:'#FF564F', feed:'https://medium.com/feed/kava-labs',                        home:'https://www.kava.io/news' },
-  { id:'celo',        name:'Celo',              color:'#FCFF52', feed:'https://medium.com/feed/celoorg',                          home:'https://celo.org/blog' },
-  { id:'arweave',     name:'Arweave',           color:'#222326', feed:'https://medium.com/feed/@arweave',                         home:'https://arweave.medium.com/' },
-
+  { id:'polkadot',    cat:'crypto', name:'Polkadot',          color:'#E6007A', feed:'https://polkadot.network/blog/feed',                       home:'https://polkadot.network/blog/' },  { id:'cosmos',      cat:'crypto', name:'Cosmos',            color:'#2E3148', feed:'https://blog.cosmos.network/feed',                         home:'https://blog.cosmos.network/' },  { id:'sui',         cat:'crypto', name:'Sui',               color:'#4DA2FF', feed:'https://blog.sui.io/rss/',                                 home:'https://blog.sui.io/' },  { id:'aptos',       cat:'crypto', name:'Aptos',             color:'#00D0B0', feed:'https://aptosnetwork.com/currents/rss.xml',                home:'https://aptosnetwork.com/currents' },  { id:'ton',         cat:'crypto', name:'Toncoin (TON)',     color:'#0098EA', feed:'https://blog.ton.org/rss.xml',                             home:'https://blog.ton.org/' },  { id:'nearprotocol',cat:'crypto', name:'NEAR Protocol',     color:'#00EC97', feed:'https://nearprotocol.com/feed/',                           home:'https://www.near.org/blog' },  { id:'algorand',    cat:'crypto', name:'Algorand',          color:'#000000', feed:'https://medium.com/feed/algorand',                        home:'https://algorand.co/' },  { id:'filecoin',    cat:'crypto', name:'Filecoin',          color:'#0090FF', feed:'https://filecoin.io/blog/feed/index.xml',                 home:'https://www.filecoin.io/blog' },  { id:'celestia',    cat:'crypto', name:'Celestia',          color:'#7B2BF9', feed:'https://blog.celestia.org/rss/',                          home:'https://blog.celestia.org/' },  { id:'injective',   cat:'crypto', name:'Injective',         color:'#00F2FE', feed:'https://injective.com/blog/feed',                          home:'https://injective.com/blog' },  { id:'polygon',     cat:'crypto', name:'Polygon',           color:'#8247E5', feed:'https://polygon.technology/blog/feed',                     home:'https://polygon.technology/blog' },  { id:'arbitrum',    cat:'crypto', name:'Arbitrum',          color:'#12AAFF', feed:'https://arbitrumfoundation.medium.com/feed',               home:'https://arbitrumfoundation.medium.com/' },  { id:'optimism',    cat:'crypto', name:'Optimism',          color:'#FF0420', feed:'https://api.paragraph.com/blogs/rss/@the-optimism-collective', home:'https://paragraph.com/@the-optimism-collective' },  { id:'starknet',    cat:'crypto', name:'Starknet',          color:'#EC796B', feed:'https://medium.com/feed/@StarkWare',                       home:'https://www.starknet.io/blog/' },  { id:'zksync',      cat:'crypto', name:'ZKsync',            color:'#4E529A', feed:'https://api.paragraph.com/blogs/rss/@zksync',              home:'https://paragraph.com/@zksync' },  { id:'zilliqa',     cat:'crypto', name:'Zilliqa',           color:'#49C1BF', feed:'https://blog.zilliqa.com/feed',                            home:'https://blog.zilliqa.com/' },  { id:'thegraph',    cat:'crypto', name:'The Graph',         color:'#6747ED', feed:'https://thegraph.com/blog/rss.xml',                        home:'https://thegraph.com/blog/' },  { id:'kava',        cat:'crypto', name:'Kava',              color:'#FF564F', feed:'https://medium.com/feed/kava-labs',                        home:'https://www.kava.io/news' },  { id:'celo',        cat:'crypto', name:'Celo',              color:'#FCFF52', feed:'https://medium.com/feed/celoorg',                          home:'https://celo.org/blog' },  { id:'arweave',     cat:'crypto', name:'Arweave',           color:'#222326', feed:'https://medium.com/feed/@arweave',                         home:'https://arweave.medium.com/' },
   // — DeFi & DEX protocols —
-  { id:'uniswap',     name:'Uniswap',           color:'#FF007A', feed:'https://blog.uniswap.org/rss.xml',                        home:'https://blog.uniswap.org/' },
-  { id:'aave',        name:'Aave',              color:'#B6509E', feed:'https://governance.aave.com/posts.rss',                    home:'https://governance.aave.com/' },
-  { id:'lido',        name:'Lido',              color:'#00A3FF', feed:'https://blog.lido.fi/rss/',                                home:'https://blog.lido.fi/' },
-  { id:'curve',       name:'Curve Finance',     color:'#3465A4', feed:'https://blog.curve.fi/feed',                               home:'https://news.curve.finance/' },
-  { id:'compound',    name:'Compound',          color:'#00D395', feed:'https://medium.com/feed/compound-finance',                 home:'https://medium.com/compound-finance' },
-  { id:'synthetix',   name:'Synthetix',         color:'#00D1FF', feed:'https://blog.synthetix.io/rss/',                           home:'https://blog.synthetix.io/' },
-  { id:'sushiswap',   name:'Sushi',             color:'#FA52A0', feed:'https://medium.com/feed/sushiswap-org',                    home:'https://www.sushi.com/blog' },
-  { id:'pendle',      name:'Pendle',            color:'#3CACF3', feed:'https://medium.com/feed/pendle',                           home:'https://medium.com/pendle' },
-  { id:'thorchain',   name:'THORChain',         color:'#00D4AA', feed:'https://medium.com/feed/thorchain',                        home:'https://medium.com/thorchain' },
-  { id:'balancer',    name:'Balancer',          color:'#1E1E1E', feed:'https://medium.com/feed/balancer-protocol',                home:'https://medium.com/balancer-protocol' },
-  { id:'rocketpool',  name:'Rocket Pool',       color:'#FF8558', feed:'https://medium.com/feed/rocket-pool',                      home:'https://medium.com/rocket-pool' },
-  { id:'gmx',         name:'GMX',               color:'#2D42FC', feed:'https://medium.com/feed/@gmx.io',                          home:'https://gmxio.medium.com/' },
-
+  { id:'uniswap',     cat:'crypto', name:'Uniswap',           color:'#FF007A', feed:'https://blog.uniswap.org/rss.xml',                        home:'https://blog.uniswap.org/' },  { id:'aave',        cat:'crypto', name:'Aave',              color:'#B6509E', feed:'https://governance.aave.com/posts.rss',                    home:'https://governance.aave.com/' },  { id:'lido',        cat:'crypto', name:'Lido',              color:'#00A3FF', feed:'https://blog.lido.fi/rss/',                                home:'https://blog.lido.fi/' },  { id:'curve',       cat:'crypto', name:'Curve Finance',     color:'#3465A4', feed:'https://blog.curve.fi/feed',                               home:'https://news.curve.finance/' },  { id:'compound',    cat:'crypto', name:'Compound',          color:'#00D395', feed:'https://medium.com/feed/compound-finance',                 home:'https://medium.com/compound-finance' },  { id:'synthetix',   cat:'crypto', name:'Synthetix',         color:'#00D1FF', feed:'https://blog.synthetix.io/rss/',                           home:'https://blog.synthetix.io/' },  { id:'sushiswap',   cat:'crypto', name:'Sushi',             color:'#FA52A0', feed:'https://medium.com/feed/sushiswap-org',                    home:'https://www.sushi.com/blog' },  { id:'pendle',      cat:'crypto', name:'Pendle',            color:'#3CACF3', feed:'https://medium.com/feed/pendle',                           home:'https://medium.com/pendle' },  { id:'thorchain',   cat:'crypto', name:'THORChain',         color:'#00D4AA', feed:'https://medium.com/feed/thorchain',                        home:'https://medium.com/thorchain' },  { id:'balancer',    cat:'crypto', name:'Balancer',          color:'#1E1E1E', feed:'https://medium.com/feed/balancer-protocol',                home:'https://medium.com/balancer-protocol' },  { id:'rocketpool',  cat:'crypto', name:'Rocket Pool',       color:'#FF8558', feed:'https://medium.com/feed/rocket-pool',                      home:'https://medium.com/rocket-pool' },  { id:'gmx',         cat:'crypto', name:'GMX',               color:'#2D42FC', feed:'https://medium.com/feed/@gmx.io',                          home:'https://gmxio.medium.com/' },
   // — Exchanges, wallets & infrastruktur —
-  { id:'okx',         name:'OKX',               color:'#000000', feed:'https://www.okx.com/help/rss/announcements-latest-announcements', home:'https://www.okx.com/help/section/announcements' },
-  { id:'bitgetblog',  name:'Bitget',            color:'#00F0FF', feed:'https://www.bitget.com/rss/support/announcement',          home:'https://www.bitget.com/support/articles' },
-  { id:'cryptocom',   name:'Crypto.com',        color:'#002D74', feed:'https://blog.crypto.com/rss/',                             home:'https://crypto.com/company-updates' },
-  { id:'kraken',      name:'Kraken',            color:'#5741D9', feed:'https://blog.kraken.com/feed/',                            home:'https://blog.kraken.com/' },
-  { id:'coinbase',    name:'Coinbase',          color:'#0052FF', feed:'https://blog.coinbase.com/feed',                           home:'https://www.coinbase.com/blog' },
-  { id:'metamask',    name:'MetaMask',          color:'#F6851B', feed:'https://medium.com/feed/metamask',                         home:'https://metamask.io/news/' },
-  { id:'ledger',      name:'Ledger',            color:'#000000', feed:'https://www.ledger.com/category/blog-posts/feed/',         home:'https://www.ledger.com/blog' },
-];
+  { id:'okx',         cat:'crypto', name:'OKX',               color:'#000000', feed:'https://www.okx.com/help/rss/announcements-latest-announcements', home:'https://www.okx.com/help/section/announcements' },  { id:'bitgetblog',  cat:'crypto', name:'Bitget',            color:'#00F0FF', feed:'https://www.bitget.com/rss/support/announcement',          home:'https://www.bitget.com/support/articles' },  { id:'cryptocom',   cat:'crypto', name:'Crypto.com',        color:'#002D74', feed:'https://blog.crypto.com/rss/',                             home:'https://crypto.com/company-updates' },  { id:'kraken',      cat:'crypto', name:'Kraken',            color:'#5741D9', feed:'https://blog.kraken.com/feed/',                            home:'https://blog.kraken.com/' },  { id:'coinbase',    cat:'crypto', name:'Coinbase',          color:'#0052FF', feed:'https://blog.coinbase.com/feed',                           home:'https://www.coinbase.com/blog' },  { id:'metamask',    cat:'crypto', name:'MetaMask',          color:'#F6851B', feed:'https://medium.com/feed/metamask',                         home:'https://metamask.io/news/' },  { id:'ledger',      cat:'crypto', name:'Ledger',            color:'#000000', feed:'https://www.ledger.com/category/blog-posts/feed/',         home:'https://www.ledger.com/blog' },];
 
 // Coba beberapa proxy CORS berurutan — kalau satu gagal/limit, lanjut ke berikutnya.
 const PROXIES = [
@@ -292,9 +239,27 @@ const PROXIES = [
   url => 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(url),
 ];
 
+const CATEGORIES = [
+  { id:'all',      label:'Semua',            color:null },
+  { id:'tech',     label:'Teknologi',        color:'var(--c-tech)' },
+  { id:'crypto',   label:'Crypto',           color:'var(--c-crypto)' },
+  { id:'stock-us', label:'Saham AS',         color:'var(--c-us)' },
+  { id:'stock-id', label:'Saham Indonesia',  color:'var(--c-id)' },
+];
+const CAT_LABEL = Object.fromEntries(CATEGORIES.map(c=>[c.id,c.label]));
+
+// Sumber yang `feed`-nya sama dengan `home` memang tidak punya RSS asli (newsroom-only) —
+// jangan dicoba di-fetch sebagai XML sama sekali, karena pasti gagal parse dan cuma buang
+// kuota proxy CORS gratis. Sumber begini ditampilkan lewat panel "Akses Langsung" terpisah.
+const FETCHABLE_SOURCES = SOURCES.filter(s => s.feed !== s.home);
+const LINK_ONLY_SOURCES = SOURCES.filter(s => s.feed === s.home);
+
 const activeFilters = new Set(SOURCES.map(s=>s.id));
+let activeTab = 'all';
+let searchQuery = '';
 let allItems = [];
-let failedSources = [];
+let failedSources = [];       // FETCHABLE_SOURCES yang gagal fetch/parse (proxy/RSS bermasalah)
+let directAccessSources = []; // LINK_ONLY_SOURCES + failedSources — semua yang tidak ada artikel otomatis
 
 function stripHtml(str){
   if(!str) return '';
@@ -350,10 +315,54 @@ async function fetchSource(src){
   return { ok:false, error: lastErr?.message || 'unknown' };
 }
 
+function renderStatStrip(){
+  const strip = document.getElementById('statStrip');
+  strip.innerHTML = CATEGORIES.filter(c => c.id !== 'all').map(c => {
+    const n = SOURCES.filter(s => s.cat === c.id).length;
+    return `<div class="stat" data-cat="${c.id}"><div class="stat-n">${n}</div><div class="stat-l">${c.label}</div></div>`;
+  }).join('') + `<div class="stat" data-cat="all"><div class="stat-n">${SOURCES.length}</div><div class="stat-l">Total sumber</div></div>`;
+}
+
+function renderTabs(){
+  const bar = document.getElementById('tabbar');
+  bar.innerHTML = '';
+  CATEGORIES.forEach(c => {
+    const count = c.id === 'all' ? SOURCES.length : SOURCES.filter(s => s.cat === c.id).length;
+    const el = document.createElement('button');
+    el.className = 'tab' + (activeTab === c.id ? ' active' : '');
+    el.innerHTML = (c.color ? `<span class="sw" style="background:${c.color}"></span>` : '') + `${c.label} <span class="cnt">${count}</span>`;
+    el.onclick = () => { activeTab = c.id; renderTabs(); renderChips(); };
+    bar.appendChild(el);
+  });
+  const spacer = document.createElement('div');
+  spacer.className = 'tab-spacer';
+  bar.appendChild(spacer);
+  const box = document.createElement('div');
+  box.className = 'search-box';
+  box.innerHTML = `<input type="text" id="searchInput" placeholder="cari sumber…" value="${searchQuery.replace(/"/g,'')}">`;
+  bar.appendChild(box);
+  document.getElementById('searchInput').oninput = (e) => { searchQuery = e.target.value.toLowerCase(); renderChips(); };
+}
+
+function visibleSources(){
+  return SOURCES.filter(s => {
+    if(activeTab !== 'all' && s.cat !== activeTab) return false;
+    if(searchQuery && !s.name.toLowerCase().includes(searchQuery)) return false;
+    return true;
+  });
+}
+
 function renderChips(){
   const chips = document.getElementById('chips');
+  const list = visibleSources();
+  document.getElementById('groupTitle').textContent =
+    (activeTab === 'all' ? 'Semua sumber' : CAT_LABEL[activeTab]) + ` — ${list.length} ditampilkan`;
   chips.innerHTML = '';
-  SOURCES.forEach(src => {
+  if(list.length === 0){
+    chips.innerHTML = '<div class="empty" style="padding:16px 0;">Tidak ada sumber yang cocok dengan pencarian.</div>';
+    return;
+  }
+  list.forEach(src => {
     const count = allItems.filter(i => i.source.id === src.id).length;
     const el = document.createElement('div');
     el.className = 'chip' + (activeFilters.has(src.id) ? ' active' : ' dim');
@@ -364,13 +373,25 @@ function renderChips(){
   });
 }
 
+document.getElementById('selectAllBtn').onclick = () => { visibleSources().forEach(s => activeFilters.add(s.id)); renderChips(); renderFeed(); };
+document.getElementById('selectNoneBtn').onclick = () => { visibleSources().forEach(s => activeFilters.delete(s.id)); renderChips(); renderFeed(); };
+
+const sourcesPanel = document.getElementById('sourcesPanel');
+const sourcesToggleBtn = document.getElementById('sourcesToggleBtn');
+sourcesToggleBtn.onclick = () => {
+  const willShow = sourcesPanel.classList.contains('hidden');
+  sourcesPanel.classList.toggle('hidden');
+  sourcesToggleBtn.classList.toggle('active-panel', willShow);
+  sourcesToggleBtn.textContent = willShow ? '✕ TUTUP SUMBER' : '☰ KELOLA SUMBER';
+};
+
 function renderFeed(){
   const feed = document.getElementById('feed');
   const visible = allItems.filter(i => activeFilters.has(i.source.id)).sort((a,b) => b.date - a.date);
   feed.innerHTML = '';
 
-  if(visible.length === 0 && failedSources.length === SOURCES.length){
-    feed.innerHTML = '<div class="empty">Semua sumber gagal dimuat. Coba REFRESH ALL, atau proxy CORS publik sedang dibatasi.</div>';
+  if(visible.length === 0 && failedSources.length === FETCHABLE_SOURCES.length && FETCHABLE_SOURCES.length > 0){
+    feed.innerHTML = '<div class="empty">Semua sumber RSS gagal dimuat. Coba REFRESH ALL, atau proxy CORS publik sedang dibatasi.</div>';
     return;
   }
   if(visible.length === 0){
@@ -384,6 +405,7 @@ function renderFeed(){
       <div class="item-meta">
         <div class="src"><span class="sw" style="background:${item.source.color}"></span>${item.source.name}</div>
         ${item.date.getTime() ? timeAgo(item.date) : ''}
+        <div><span class="cat-tag">${CAT_LABEL[item.source.cat] || ''}</span></div>
       </div>
       <div class="item-body">
         <p class="item-title">${item.title}</p>
@@ -391,44 +413,89 @@ function renderFeed(){
       </div>`;
     feed.appendChild(a);
   });
+}
 
-  failedSources.forEach(f => {
-    const row = document.createElement('div');
-    row.className = 'err-row';
-    row.innerHTML = `⚠ ${f.name} gagal dimuat otomatis — <a href="${f.home}" target="_blank" rel="noopener">buka newsroom resmi ${f.name} langsung →</a>`;
-    feed.appendChild(row);
-  });
+function renderDirectAccess(){
+  const grid = document.getElementById('directGrid');
+  const list = [...directAccessSources].sort((a,b) => a.name.localeCompare(b.name));
+  document.getElementById('directAccessToggleBtn').innerHTML = `🔗 AKSES LANGSUNG <span class="cnt">${list.length}</span>`;
+  if(list.length === 0){
+    grid.innerHTML = '<div class="empty" style="padding:16px 0;">Semua sumber berhasil menampilkan artikel otomatis.</div>';
+    return;
+  }
+  grid.innerHTML = list.map(s => `
+    <a class="direct-card" href="${s.home}" target="_blank" rel="noopener noreferrer" style="--dc-color:${s.color}">
+      <span class="direct-card-body">
+        <span class="direct-card-name">${s.name}</span>
+        <span class="direct-card-cat">${CAT_LABEL[s.cat] || ''}</span>
+      </span>
+      <span class="direct-card-arrow">↗</span>
+    </a>
+  `).join('');
 }
 
 function renderTicker(){
   const track = document.getElementById('tickerTrack');
   const top = [...allItems].sort((a,b)=>b.date-a.date).slice(0, 14);
   if(top.length === 0) return;
-  track.innerHTML = [...top, ...top].map(i => `<span><b>${i.source.name}</b> — ${i.title}</span>`).join('');
+  track.innerHTML = [...top, ...top].map(i =>
+    `<span><span class="sw" style="background:${i.source.color}"></span><b>${i.source.name}</b> — ${i.title}</span>`
+  ).join('');
+}
+
+// Jalankan fetch dengan batas konkurensi supaya tidak membanjiri proxy CORS gratis
+// sekaligus (200+ sumber kalau ditembak paralel penuh akan cepat kena rate-limit).
+async function fetchAllBatched(sources, concurrency, onProgress){
+  const results = new Array(sources.length);
+  let next = 0;
+  async function worker(){
+    while(next < sources.length){
+      const i = next++;
+      results[i] = await fetchSource(sources[i]);
+      onProgress(i, results[i]);
+    }
+  }
+  await Promise.all(Array.from({length: Math.min(concurrency, sources.length)}, worker));
+  return results;
 }
 
 async function loadAll(){
   const btn = document.getElementById('refreshBtn');
   btn.disabled = true;
-  document.getElementById('statusLine').innerHTML = '<span class="dot"></span>menghubungkan ke ' + SOURCES.length + ' newsroom resmi…';
+  document.getElementById('statusLine').innerHTML =
+    `<span class="dot"></span>menghubungkan ke ${FETCHABLE_SOURCES.length} sumber RSS (${LINK_ONLY_SOURCES.length} sumber lain cuma newsroom langsung)…`;
   allItems = []; failedSources = [];
-  renderChips();
-  document.getElementById('feed').innerHTML = '<div class="loading-row">MENARIK RILIS RESMI DARI SETIAP SUMBER…</div>';
+  directAccessSources = [...LINK_ONLY_SOURCES];
+  renderStatStrip(); renderTabs(); renderChips(); renderDirectAccess();
+  document.getElementById('feed').innerHTML = '<div class="loading-row">MENARIK RILIS RESMI DARI SETIAP SUMBER…<div class="bar"></div></div>';
 
-  const results = await Promise.all(SOURCES.map(src => fetchSource(src)));
-  results.forEach((res, idx) => {
-    const src = SOURCES[idx];
+  let done = 0;
+  await fetchAllBatched(FETCHABLE_SOURCES, 10, (idx, res) => {
+    const src = FETCHABLE_SOURCES[idx];
     if(res.ok) res.items.forEach(it => allItems.push(it));
-    else failedSources.push(src);
+    else { failedSources.push(src); directAccessSources.push(src); }
+    done++;
+    document.getElementById('statusLine').innerHTML =
+      `<span class="dot"></span>memuat… ${done}/${FETCHABLE_SOURCES.length} sumber RSS diproses · ${allItems.length} rilis terkumpul`;
+    if(done % 8 === 0 || done === FETCHABLE_SOURCES.length){ renderChips(); renderFeed(); renderTicker(); renderDirectAccess(); }
   });
 
-  const okCount = SOURCES.length - failedSources.length;
+  const okCount = FETCHABLE_SOURCES.length - failedSources.length;
   document.getElementById('statusLine').innerHTML =
-    `<span class="dot"></span>${okCount}/${SOURCES.length} sumber tersambung · ${allItems.length} rilis · diperbarui ${new Date().toLocaleTimeString('id-ID')}`;
+    `<span class="dot"></span>${okCount}/${FETCHABLE_SOURCES.length} sumber RSS tersambung · ${allItems.length} rilis · ` +
+    `${directAccessSources.length} sumber akses-langsung · diperbarui ${new Date().toLocaleTimeString('id-ID')}`;
 
-  renderChips(); renderFeed(); renderTicker();
+  renderChips(); renderFeed(); renderTicker(); renderDirectAccess();
   btn.disabled = false;
 }
+
+const directPanel = document.getElementById('directPanel');
+const directAccessToggleBtn = document.getElementById('directAccessToggleBtn');
+directAccessToggleBtn.onclick = () => {
+  const willShow = directPanel.classList.contains('hidden');
+  directPanel.classList.toggle('hidden');
+  directAccessToggleBtn.classList.toggle('active-panel', willShow);
+};
 
 document.getElementById('refreshBtn').onclick = loadAll;
 loadAll();

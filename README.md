@@ -70,6 +70,38 @@ masih newsroom-only, atau menambah nama baru dari Nasdaq-100/S&P 100 yang belum 
 Total sekarang 159 sumber (10 teknologi + ~59 crypto + ~98 saham blue-chip AS termasuk 8 dari kategori
 teknologi di atas).
 
+## Saham Indonesia (LQ45 / IDX30) — dan soal "lowcap viral"
+
+Ditambahkan ~40 emiten blue-chip Indonesia dari indeks LQ45/IDX30: perbankan (BBCA, BBRI, BMRI, BBNI,
+BRIS, BTN, Bank Jago), telko (TLKM, EXCL, ISAT), konsumer (Unilever, Indofood, ICBP, Mayora, Gudang
+Garam, Sampoerna, Sido Muncul), energi & tambang (Adaro, Bukit Asam, Antam, Vale, Merdeka Copper Gold,
+Amman Mineral, Medco, Pertamina Geothermal), petrokimia (Barito Pacific, Chandra Asri, Barito
+Renewables), serta beberapa nama teknologi/consumer internet (GoTo, Bukalapak). Sama seperti saham AS,
+hampir semua emiten Indonesia tidak punya feed RSS/XML terpisah dari halaman investor relations-nya —
+jadi `feed` = `home` di semua entri, mengarah ke halaman IR resmi masing-masing perusahaan.
+
+**Soal permintaan "saham lowcap yang viral":** situs ini dengan sengaja **tidak** memasukkan daftar
+ticker spesifik untuk kategori ini. Sebagian besar saham yang "viral" di kalangan retail Indonesia masuk
+kategori yang oleh pelaku pasar disebut *saham gorengan* — pergerakan harga/volumenya diduga direkayasa
+("digoreng"), sering ditandai notasi UMA (Unusual Market Activity) oleh BEI, dan tidak jarang berakhir
+jadi kasus manipulasi pasar yang disidik OJK/Bareskrim. Menaruh nama-nama itu di daftar sumber "berita
+resmi" — bersebelahan dengan BBCA atau Telkom — berisiko memberi kesan kredibilitas/legitimasi yang tidak
+seharusnya ke emiten yang justru sedang dicurigai, dan berpotensi malah memperkuat FOMO/hype yang sudah
+jadi masalah di sekitar saham-saham ini.
+
+Sebagai gantinya, ditambahkan satu sumber netral: **IDX — Keterbukaan Informasi**, halaman resmi Bursa
+Efek Indonesia yang memuat pengumuman/keterbukaan informasi dari *semua* emiten tercatat, siapa pun itu.
+Ini memberi akses ke info resmi soal emiten mana pun yang sedang ramai dibicarakan — termasuk yang lowcap
+— tanpa situs ini yang memilih-milih ticker mana yang "layak" ditampilkan sebagai sumber tepercaya.
+
+Kalau kamu tetap ingin menambahkan ticker lowcap tertentu secara manual (atas risiko dan pertimbangan
+sendiri), caranya sama seperti menambah sumber lain: cari halaman IR/corporate resmi di domain milik
+perusahaan itu sendiri (bukan grup Telegram/media sosial "influencer saham"), lalu tambahkan entri baru
+di `SOURCES` dengan pola `feed` = `home` seperti contoh di atas.
+
+Total sekarang 200 sumber (10 teknologi + ~59 crypto + ~98 saham blue-chip AS + ~40 saham blue-chip
+Indonesia + 1 sumber keterbukaan informasi IDX).
+
 **Kalau kamu mau menambah proyek spesifik di luar daftar ini** (rank 100–500), cara paling aman:
 1. Cari apakah proyek itu punya blog resmi di domain sendiri (bukan Medium/Twitter saja) — cek halaman
    "Blog", "News", atau "Press" di situs resminya.
